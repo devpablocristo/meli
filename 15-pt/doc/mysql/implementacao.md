@@ -1,0 +1,247 @@
+### Configuração do Cliente MySQL
+
+#### Resumo
+
+1. **Definição de Configuração**: Criar uma estrutura `MySQLClientConfig` para armazenar detalhes de conexão e uma função para gerar a string DSN.
+2. **Configuração do Cliente**: Implementar um cliente MySQL (`MySQLClient`) que utiliza a configuração para se conectar ao banco de dados.
+3. **Injeção de Dependências**: Configurar e inicializar o cliente MySQL através da função `NewMySQLSetup`.
+4. **Repositório MySQL**: Criar um repositório (`mysqlRepository`) que utiliza o cliente MySQL para realizar operações CRUD no banco de dados.
+
+---
+
+### MySQL Config
+
+Este código define uma estrutura em Go para configurar um cliente MySQL e uma função associada para gerar uma string de conexão (DSN - Data Source Name).
+
+A estrutura `MySQLClientConfig` contém os parâmetros necessários para se conectar a um banco de dados MySQL. Esses parâmetros incluem o usuário, a senha, o host, a porta e o nome do banco de dados.
+
+- **User**: O nome de usuário que será utilizado para se conectar ao banco de dados.
+- **Password**: A senha correspondente ao usuário.
+- **Host**: O endereço do host onde o banco de dados está localizado.
+- **Port**: A porta na qual o banco de dados está ouvindo.
+- **Database**: O nome do banco de dados ao qual se deseja conectar.
+
+A função `dsn()` (Data Source Name) gera uma string de conexão (DSN) que é utilizada para se conectar ao banco de dados MySQL. Esta string inclui todos os parâmetros necessários no formato adequado.
+
+```go
+package gosqldriver
+
+import (
+    "fmt"
+)
+
+// MySQLClientConfig contém a configuração necessária para se conectar a um banco de dados MySQL
+type MySQLClientConfig struct {
+    User     string // Usuário do banco de dados
+    Password string // Senha do usuário
+    Host     string // Host onde o banco de dados está localizado
+    Port     string // Porta na qual o banco de dados está ouvindo
+    Database string // Nome do banco de dados
+}
+
+// dsn gera o Data Source Name (DSN) a partir da configuração fornecida
+func (config MySQLClientConfig) dsn() string {
+    return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+        config.User, config.Password, config.Host, config.Port, config.Database)
+}
+```
+
+Quando se cria uma instância de `MySQLClientConfig` com os detalhes da conexão ao banco de dados, pode-se chamar a função `dsn()` para obter a string de conexão que será utilizada para se conectar ao MySQL.
+
+### MySQL Setup
+
+O pacote `mysqlsetup` é utilizado para configurar e inicializar um cliente MySQL utilizando os detalhes de conexão definidos em uma estrutura de configuração. Este código tem uma relação direta com a estrutura e a função `dsn()` do código anterior.
+
+```go
+package mysqlsetup
+
+import (
+    gosqldriver "api/pkg/mysql/go-sql-driver"
+)
+
+// NewMySQLSetup configura e retorna um novo cliente MySQL
+func NewMySQLSetup() (*gosqldriver.MySQLClient, error) {
+    config := gosqldriver.MySQLClientConfig{
+        User:     "api_user",
+        Password: "api_password",
+        Host:     "mysql",
+        Port:     "3306",
+        Database: "inventory",
+    }
+    return gosqldriver.NewMySQLClient(config)
+}
+```
+
+- **Importação do Pacote**: Importa-se o pacote `gosqldriver` que contém a implementação do cliente MySQL.
+- **Função `NewMySQLSetup`**:
+    - Define-se uma configuração `MySQLClientConfig` com os detalhes da conexão (usuário, senha, host, porta e banco de dados).
+    - Chama-se `NewMySQLClient` com a configuração criada, que utiliza a função `dsn()` do código anterior para gerar a string de conexão e estabelecer a conexão com o banco de dados MySQL.
+    - A função retorna uma instância do cliente MySQL configurado e pronto para ser utilizado em outras partes do código.
+
+### MySQL Client
+
+Este código define um cliente MySQL em Go que interage com um banco de dados MySQL utilizando a configuração fornecida. A seguir, explicam-se os componentes e sua relação com o código anterior.
+
+```go
+package gosqldriver
+
+import (
+    "database/sql"
+    "fmt"
+
+    _ "github.com/go-sql-driver/mysql"
+)
+
+// MySQLClient representa um cliente para interagir com um banco de dados MySQL
+type MySQLClient struct {
+    config MySQLClientConfig // Configuração do cliente MySQL
+    db     *sql.DB           // Conexão com o banco de dados
+}
+
+// NewMySQLClient cria uma nova instância de MySQLClient e estabelece a conexão com o banco de dados
+func NewMySQLClient(config MySQLClientConfig) (*MySQLClient, error) {
+    client := &MySQLClient{config: config}
+    err := client.connect()
+    if err != nil {
+        return nil, fmt.Errorf("failed to initialize MySQLClient: %v", err)
+    }
+    return client, nil
+}
+
+// connect estabelece a conexão com o banco de dados MySQL utilizando a configuração fornecida
+func (client *MySQLClient) connect() error {
+    dsn := client.config.dsn()
+    conn, err := sql.Open("mysql", dsn)
+    if err != nil {
+        return fmt.Errorf("failed to connect to MySQL: %w", err)
+    }
+    if err := conn.Ping(); err != nil {
+        return fmt.Errorf("failed to ping MySQL: %w", err)
+    }
+    client.db = conn
+    return nil
+}
+
+// Close fecha a conexão com o banco de dados MySQL
+func (client *MySQLClient) Close() {
+    if client.db != nil {
+        client.db.Close()
+    }
+}
+
+// DB retorna a conexão com o banco de dados MySQL
+func (client *MySQLClient) DB() *sql.DB {
+    return client.db
+}
+```
+
+#### Descrição dos Componentes
+
+1. **Importações e Pacote**:
+- `database/sql`: Pacote padrão de Go para interagir com bancos de dados SQL.
+- `fmt`: Pacote padrão de Go para formatar strings.
+- `_ "github.com/go-sql-driver/mysql"`: Importa o driver MySQL para `database/sql`, necessário para conectar Go com MySQL.
+
+2. **Estrutura `MySQLClient`**:
+- `MySQLClientConfig config`: Configuração do cliente MySQL, que foi definida no código anterior.
+- `*sql.DB db`: A conexão com o banco de dados.
+
+3. **Função `NewMySQLClient`**:
+- Toma uma configuração `MySQLClientConfig` e cria uma nova instância de `MySQLClient`.
+- Chama `connect()` para estabelecer a conexão com o banco de dados.
+- Se a conexão falhar, retorna um erro; se tiver sucesso, retorna a instância do cliente.
+
+4. **Função `connect`**:
+- Utiliza a função `dsn()` definida em `MySQLClientConfig` (do código anterior) para obter a string de conexão.
+- Abre a conexão com o banco de dados com `sql.Open`.
+- Verifica a conexão com `conn.Ping()`.
+- Se tudo for bem-sucedido, atribui a conexão a `client.db`.
+
+5. **Função `Close`**:
+- Fecha a conexão com o banco de dados se estiver aberta.
+
+6. **Função `DB`**:
+- Retorna a instância da conexão com o banco de dados.
+
+### MySQL Repository
+
+Este código define um repositório em Go que utiliza um banco de dados MySQL para armazenar e recuperar itens. A seguir, explicam-se os componentes e sua relação com o código anterior.
+
+```go
+package item
+
+import (
+    "database/sql"
+)
+
+// mysqlRepository é uma implementação do repositório de itens utilizando MySQL
+type mysqlRepository struct {
+    db *sql.DB // Conexão com o banco de dados MySQL
+}
+
+// NewMySqlRepository cria uma nova instância de mysqlRepository
+func NewMySqlRepository(db *sql.DB) ItemRepositoryPort {
+    return &mysqlRepository{
+        db: db,
+    }
+}
+
+// SaveItem salva um novo item no banco de dados MySQL
+func (r *mysqlRepository) SaveItem(it *Item) error {
+    query := `INSERT INTO items (code, title, description, price, stock, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+    _, err := r.db.Exec(query, it.Code, it.Title, it.Description, it.Price, it.Stock, it.Status, it.CreatedAt, it.UpdatedAt)
+    return err
+}
+
+// ListItems lista todos os itens do banco de dados MySQL
+func (r *mysqlRepository) ListItems() (MapRepo, error) {
+    query := `SELECT id, code, title, description, price, stock, status, created_at, updated_at FROM items`
+    rows, err := r.db.Query(query)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    items := make(MapRepo)
+    for rows.Next() {
+        var it Item
+        if err := rows.Scan(&it.ID, &it.Code, &it.Title, &it.Description, &it.Price, &it.Stock, &it.Status, &it.CreatedAt, &it.UpdatedAt); err != nil {
+           
+
+ return nil, err
+        }
+        items[it.ID] = it
+    }
+
+    return items, nil
+}
+```
+
+#### Descrição dos Componentes
+
+1. **Importação do pacote `database/sql`**:
+- `database/sql`: Pacote padrão de Go para interagir com bancos de dados SQL.
+
+2. **Estrutura `mysqlRepository`**:
+- `*sql.DB db`: A conexão com o banco de dados MySQL.
+
+3. **Função `NewMySqlRepository`**:
+- Cria uma nova instância de `mysqlRepository` com a conexão ao banco de dados fornecida.
+- Retorna uma implementação de `ItemRepositoryPort`.
+
+4. **Função `SaveItem`**:
+- Salva um novo item no banco de dados MySQL.
+- Utiliza uma consulta SQL `INSERT` para inserir os dados do item na tabela `items`.
+- Retorna um erro se a operação falhar.
+
+5. **Função `ListItems`**:
+- Lista todos os itens do banco de dados MySQL.
+- Utiliza uma consulta SQL `SELECT` para recuperar os dados da tabela `items`.
+- Armazena os resultados em um mapa (`MapRepo`) e os retorna.
+- Gerencia o fechamento das linhas (`rows`) após iterar sobre elas.
+
+### Relação com o Código Anterior
+
+- **Configuração do Cliente MySQL**: O repositório utiliza a conexão com o banco de dados fornecida pelo cliente MySQL, que foi configurado e inicializado no código anterior (`NewMySQLClient` em `mysqlsetup`).
+- **Injeção de Dependências**: A função `NewMySqlRepository` recebe uma instância de `*sql.DB`, que é a conexão com o banco de dados estabelecida pelo cliente MySQL. Essa injeção de dependências permite ao repositório interagir com o banco de dados sem se preocupar com os detalhes da conexão.
+- **Operações CRUD**: O repositório implementa operações básicas de armazenamento (`SaveItem`) e recuperação (`ListItems`) de dados no banco de dados MySQL utilizando a conexão gerenciada pelo cliente MySQL.

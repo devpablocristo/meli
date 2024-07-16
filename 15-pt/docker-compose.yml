@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    # Sección de construcción del servicio de la aplicación
+    build:
+      context: .            # Contexto de construcción, utiliza el directorio actual
+      dockerfile: Dockerfile # Dockerfile a usar para construir la imagen
+    ports:
+      - "8080:8080"         # Publica el puerto 8080 del contenedor en el puerto 8080 del host
+    depends_on:
+      - mysql               # El servicio 'app' depende del servicio 'mysql', es decir, se iniciará después de 'mysql'
+
+  mysql:
+    image: mysql:8.0        # Imagen de MySQL versión 8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root         # Contraseña del usuario root de MySQL
+      MYSQL_DATABASE: inventory         # Base de datos que se creará en MySQL
+      MYSQL_USER: api_user              # Usuario que se creará en MySQL
+      MYSQL_PASSWORD: api_password      # Contraseña para el usuario 'api_user'
+    ports:
+      - "3306:3306"         # Publica el puerto 3306 del contenedor en el puerto 3306 del host
+    volumes:
+      - mysql_data:/var/lib/mysql         # Volumen para persistir los datos de MySQL
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # Archivo SQL para inicializar la base de datos
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.1-apache        # Imagen de phpMyAdmin versión 5.2.1 con Apache
+    environment:
+      PMA_HOST: mysql                    # Host de MySQL al que phpMyAdmin se conectará
+      MYSQL_ROOT_PASSWORD: root          # Contraseña del usuario root de MySQL
+    ports:
+      - "8081:80"         # Publica el puerto 80 del contenedor en el puerto 8081 del host
+    depends_on:
+      - mysql            # El servicio 'phpmyadmin' depende del servicio 'mysql', es decir, se iniciará después de 'mysql'
+
+volumes:
+  mysql_data:              # Definición del volumen para persistir los datos de MySQL
