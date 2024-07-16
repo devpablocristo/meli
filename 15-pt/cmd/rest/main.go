@@ -12,29 +12,29 @@ import (
 )
 
 func main() {
-	// Setup MySQL
+	// Configurar MySQL
 	mysqlClient, err := mysqlsetup.NewMySQLSetup()
 	if err != nil {
-		log.Fatalf("Could not set up MySQL: %v", err)
+		log.Fatalf("Não foi possível configurar o MySQL: %v", err)
 	}
 	defer mysqlClient.Close()
 
-	// Initialize repository with MySQL connection
+	// Inicializar repositório com a conexão MySQL
 	repo := item.NewMySqlRepository(mysqlClient.DB())
 
-	// Initialize use case
+	// Inicializar caso de uso
 	usecase := core.NewItemUsecase(repo)
 
-	// Initialize handlers
+	// Inicializar handlers
 	handler := handler.NewHandler(usecase)
 
-	// Setup router
+	// Configurar roteador
 	router := gin.Default()
 	router.POST("/items", handler.SaveItem)
 	router.GET("/items", handler.ListItems)
 
-	// Start server
-	log.Println("Server started at http://localhost:8080")
+	// Iniciar servidor
+	log.Println("Servidor iniciado em http://localhost:8080")
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal(err)
 	}

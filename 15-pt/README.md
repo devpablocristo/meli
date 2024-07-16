@@ -1,65 +1,65 @@
-# Manual de Usuario para la API de Inventario
+# Manual do Usuário para a API de Inventário
 
-Este manual proporciona instrucciones detalladas sobre cómo configurar y ejecutar la API de Inventario, desarrollada en Golang utilizando MySQL como base de datos y gestionada mediante Docker. Asegúrese de seguir cada paso cuidadosamente para garantizar una correcta configuración y funcionamiento de la aplicación.
+Este manual fornece instruções detalhadas sobre como configurar e executar a API de Inventário, desenvolvida em Golang usando MySQL como banco de dados e gerenciada via Docker. Certifique-se de seguir cada etapa cuidadosamente para garantir uma configuração e funcionamento corretos da aplicação.
 
-## Prerrequisitos
+## Pré-requisitos
 
-1. Docker instalado en su sistema.
-2. Docker Compose instalado en su sistema.
-3. Conexión a internet para descargar las imágenes de Docker necesarias.
+1. Docker instalado no seu sistema.
+2. Docker Compose instalado no seu sistema.
+3. Conexão à internet para baixar as imagens Docker necessárias.
 
-## Contenido del Repositorio
+## Conteúdo do Repositório
 
-- `Dockerfile`: Archivo de configuración para construir la imagen de la aplicación Golang.
-- `docker-compose.yml`: Archivo de configuración para orquestar los servicios Docker (aplicación, MySQL y phpMyAdmin).
-- `init.sql`: Script SQL para inicializar la base de datos MySQL con el esquema necesario y el usuario de la API.
-- Código fuente de la API de Inventario.
+- `Dockerfile`: Arquivo de configuração para construir a imagem da aplicação Golang.
+- `docker-compose.yml`: Arquivo de configuração para orquestrar os serviços Docker (aplicação, MySQL e phpMyAdmin).
+- `init.sql`: Script SQL para inicializar o banco de dados MySQL com o esquema necessário e o usuário da API.
+- Código fonte da API de Inventário.
 
-## Instrucciones de Configuración
+## Instruções de Configuração
 
-### Paso 1: Configurar la Base de Datos
+### Passo 1: Configurar o Banco de Dados
 
-Antes de iniciar los servicios Docker, es necesario asegurarse de que el script `init.sql` se ejecute para configurar la base de datos. Este script crea la base de datos `inventory`, la tabla `items` y un usuario de la API con los permisos adecuados.
+Antes de iniciar os serviços Docker, é necessário garantir que o script `init.sql` seja executado para configurar o banco de dados. Este script cria o banco de dados `inventory`, a tabela `items` e um usuário da API com as permissões adequadas.
 
-### Paso 2: Iniciar los Servicios Docker
+### Passo 2: Iniciar os Serviços Docker
 
-Utilice Docker Compose para iniciar todos los servicios definidos en el archivo `docker-compose.yml`.
+Use Docker Compose para iniciar todos os serviços definidos no arquivo `docker-compose.yml`.
 
 ```sh
 docker-compose up --build
 ```
 
-Este comando hará lo siguiente:
+Este comando fará o seguinte:
 
-1. Construirá la imagen de la aplicación Golang.
-2. Iniciará el contenedor de MySQL.
-3. Iniciará el contenedor de phpMyAdmin.
-4. Iniciará el contenedor de la aplicación Golang.
+1. Construirá a imagem da aplicação Golang.
+2. Iniciará o contêiner do MySQL.
+3. Iniciará o contêiner do phpMyAdmin.
+4. Iniciará o contêiner da aplicação Golang.
 
-### Paso 3: Ejecutar el Script SQL en phpMyAdmin
+### Passo 3: Executar o Script SQL no phpMyAdmin
 
-Abra su navegador web y vaya a `http://localhost:8081` para acceder a phpMyAdmin. Inicie sesión con las siguientes credenciales:
+Abra seu navegador web e vá para `http://localhost:8081` para acessar o phpMyAdmin. Faça login com as seguintes credenciais:
 
-- Usuario: `root`
-- Contraseña: `root`
+- Usuário: `root`
+- Senha: `root`
 
-Una vez dentro de phpMyAdmin, siga estos pasos:
+Uma vez dentro do phpMyAdmin, siga estas etapas:
 
-1. Seleccione la base de datos `inventory`.
-2. Vaya a la pestaña "SQL".
-3. Copie y pegue el contenido del archivo `init.sql`.
-4. Ejecute el script.
+1. Selecione o banco de dados `inventory`.
+2. Vá para a aba "SQL".
+3. Copie e cole o conteúdo do arquivo `init.sql`.
+4. Execute o script.
 
-Esto inicializará la base de datos y configurará el usuario necesario para la API.
+Isso inicializará o banco de dados e configurará o usuário necessário para a API.
 
-### Paso 4: Verificar el Funcionamiento de la API
+### Passo 4: Verificar o Funcionamento da API
 
-Una vez que todos los contenedores estén en funcionamiento y la base de datos esté configurada, puede verificar el funcionamiento de la API accediendo a `http://localhost:8080` en su navegador web o utilizando herramientas como `curl` o `Postman` para interactuar con los endpoints `/items`.
+Uma vez que todos os contêineres estejam em funcionamento e o banco de dados esteja configurado, você pode verificar o funcionamento da API acessando `http://localhost:8080` no seu navegador web ou usando ferramentas como `curl` ou `Postman` para interagir com os endpoints `/items`.
 
-### Endpoints de la API
+### Endpoints da API
 
-- **POST /items**: Crear un nuevo ítem en el inventario.
-  - Body JSON:
+- **POST /items**: Criar um novo item no inventário.
+  - Corpo JSON:
     ```json
     {
       "code": "1234",
@@ -71,11 +71,11 @@ Una vez que todos los contenedores estén en funcionamiento y la base de datos e
     }
     ```
 
-- **GET /items**: Obtener una lista de todos los ítems en el inventario.
+- **GET /items**: Obter uma lista de todos os itens no inventário.
 
-### Ejemplo de Uso con `curl`
+### Exemplo de Uso com `curl`
 
-#### Crear un Nuevo Ítem
+#### Criar um Novo Item
 
 ```sh
 curl -X POST http://localhost:8080/items -H "Content-Type: application/json" -d '{
@@ -88,25 +88,25 @@ curl -X POST http://localhost:8080/items -H "Content-Type: application/json" -d 
 }'
 ```
 
-#### Obtener la Lista de Ítems
+#### Obter a Lista de Itens
 
 ```sh
 curl http://localhost:8080/items
 ```
 
-## Solución de Problemas
+## Solução de Problemas
 
-### Error de Conexión a MySQL
+### Erro de Conexão ao MySQL
 
-Si la aplicación Golang no puede conectarse a MySQL, asegúrese de que:
+Se a aplicação Golang não conseguir se conectar ao MySQL, certifique-se de que:
 
-1. El contenedor de MySQL esté en funcionamiento.
-2. El script `init.sql` se haya ejecutado correctamente.
-3. Las credenciales de la base de datos en el código de configuración coincidan con las del script `init.sql`.
+1. O contêiner do MySQL esteja em funcionamento.
+2. O script `init.sql` tenha sido executado corretamente.
+3. As credenciais do banco de dados no código de configuração correspondam às do script `init.sql`.
 
-### Verificación de Logs
+### Verificação de Logs
 
-Puede verificar los logs de los contenedores Docker para obtener más detalles sobre cualquier error.
+Você pode verificar os logs dos contêineres Docker para obter mais detalhes sobre qualquer erro.
 
 ```sh
 docker-compose logs app
@@ -114,6 +114,6 @@ docker-compose logs mysql
 docker-compose logs phpmyadmin
 ```
 
-## Conclusión
+## Conclusão
 
-Siguiendo estos pasos, debería poder configurar y ejecutar correctamente la API de Inventario. Si encuentra algún problema, consulte los logs de los contenedores Docker y asegúrese de que todos los servicios estén configurados correctamente.
+Seguindo estes passos, você deve conseguir configurar e executar corretamente a API de Inventário. Se encontrar algum problema, consulte os logs dos contêineres Docker e certifique-se de que todos os serviços estejam configurados corretamente.

@@ -1,27 +1,27 @@
-# Utilizamos la imagen base de Golang con Alpine
+# Utilizamos a imagem base do Golang com Alpine
 FROM golang:1.22.3-alpine3.20
 
-# Instalar bash para usar scripts en el contenedor
+# Instalar bash para usar scripts no contêiner
 RUN apk add --no-cache bash
 
-# Establecemos el directorio de trabajo dentro del contenedor
+# Estabelecemos o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Copiamos el go.mod y go.sum primero y descargamos los módulos necesarios
+# Copiamos o go.mod e go.sum primeiro e baixamos os módulos necessários
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copiamos el resto de los archivos fuente y el script wait-for-it.sh
+# Copiamos o restante dos arquivos fonte e o script wait-for-it.sh
 COPY . .
 COPY wait-for-it.sh /wait-for-it.sh
 
-# Hacemos que el script sea ejecutable y construimos la aplicación
+# Tornamos o script executável e construímos a aplicação
 RUN chmod +x /wait-for-it.sh && \
     go build -o /app/bin/myapp ./cmd/rest/main.go
 
-# Exponemos el puerto 8080 para la aplicación
+# Exponhamos a porta 8080 para a aplicação
 EXPOSE 8080
 
-# Comando para ejecutar la aplicación
-# Usamos wait-for-it.sh para asegurarnos de que MySQL esté disponible antes de iniciar la aplicación
+# Comando para executar a aplicação
+# Usamos wait-for-it.sh para garantir que o MySQL esteja disponível antes de iniciar a aplicação
 CMD ["/wait-for-it.sh", "mysql:3306", "--", "/app/bin/myapp"]
