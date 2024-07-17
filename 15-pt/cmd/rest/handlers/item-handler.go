@@ -25,6 +25,7 @@ func NewHandler(u core.ItemUsecasePort) *handler {
 // SaveItem manipula a solicitação para salvar um novo item
 func (h *handler) SaveItem(c *gin.Context) {
 	var it item.Item
+
 	err := c.BindJSON(&it)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
