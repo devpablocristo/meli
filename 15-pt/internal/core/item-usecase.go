@@ -4,37 +4,49 @@ import (
 	"fmt"
 
 	"api/internal/core/item"
-	"api/pkg/config"
 )
 
-// ItemUsecase representa o caso de uso para os itens
+// ItemUsecase representa el caso de uso para los elementos
 type ItemUsecase struct {
-	repo item.ItemRepositoryPort // Repositório de itens
+	mysqlRepo item.ItemRepositoryPort // Repositorio de MySQL
+	mapRepo   item.ItemRepositoryPort // Repositorio de Map
 }
 
-// NewItemUsecase cria uma nova instância de ItemUsecase
-func NewItemUsecase(repo item.ItemRepositoryPort) ItemUsecasePort {
+// NewItemUsecase crea una nueva instancia de ItemUsecase
+func NewItemUsecase(mysqlRepo, mapRepo item.ItemRepositoryPort) ItemUsecasePort {
 	return &ItemUsecase{
-		repo: repo,
+		mysqlRepo: mysqlRepo,
+		mapRepo:   mapRepo,
 	}
 }
 
-// SaveItem salva um novo item no repositório
+// SaveItem guarda un nuevo elemento en ambos repositorios
 func (u *ItemUsecase) SaveItem(it item.Item) error {
-	if err := u.repo.SaveItem(&it); err != nil {
-		return fmt.Errorf("error saving item: %w", err)
+	if err := u.mysqlRepo.SaveItem(&it); err != nil {
+		return fmt.Errorf("error saving item in MySQL: %w", err)
+	}
+	if err := u.mapRepo.SaveItem(&it); err != nil {
+		return fmt.Errorf("error saving item in MapRepo: %w", err)
 	}
 	return nil
 }
 
-// ListItems lista todos os itens do repositório
+// ListItems lista todos los elementos de ambos repositorios y los combina
 func (u *ItemUsecase) ListItems() (item.MapRepo, error) {
-	its, err := u.repo.ListItems()
+	mysqlItems, err := u.mysqlRepo.ListItems()
 	if err != nil {
-		return nil, fmt.Errorf("error in repository: %w", err)
+		return nil, fmt.Errorf("error listing items from MySQL: %w", err)
 	}
-	if len(its) == 0 {
-		return nil, config.ErrNotFound
+
+	mapItems, err := u.mapRepo.ListItems()
+	if err != nil {
+		return nil, fmt.Errorf("error listing items from MapRepo: %w", err)
 	}
-	return its, nil
+
+	// Combina los resultados de ambos repositorios
+	for k, v := range mapItems {
+		mysqlItems[k] = v
+	}
+
+	return mysqlItems, nil
 }
