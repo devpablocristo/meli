@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-// Item representa um item no sistema
+// Item representa un elemento en el sistema
 type Item struct {
 	ID          int       `json:"id"`
 	Code        string    `json:"code"`

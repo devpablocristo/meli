@@ -2,6 +2,7 @@ package item
 
 import (
 	"database/sql"
+	"time"
 )
 
 // mysqlRepository é uma implementação do repositório de itens utilizando MySQL
@@ -18,6 +19,12 @@ func NewMySqlRepository(db *sql.DB) ItemRepositoryPort {
 
 // SaveItem salva um novo item no banco de dados MySQL
 func (r *mysqlRepository) SaveItem(it *Item) error {
+	if it.CreatedAt.IsZero() {
+		it.CreatedAt = time.Now()
+	}
+	if it.UpdatedAt.IsZero() {
+		it.UpdatedAt = time.Now()
+	}
 	query := `INSERT INTO items (code, title, description, price, stock, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
 	_, err := r.db.Exec(query, it.Code, it.Title, it.Description, it.Price, it.Stock, it.Status, it.CreatedAt, it.UpdatedAt)
 	return err

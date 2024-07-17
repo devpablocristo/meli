@@ -74,9 +74,9 @@ func NewMySQLSetup() (*gosqldriver.MySQLClient, error) {
 
 - **Importação do Pacote**: Importa-se o pacote `gosqldriver` que contém a implementação do cliente MySQL.
 - **Função `NewMySQLSetup`**:
-    - Define-se uma configuração `MySQLClientConfig` com os detalhes da conexão (usuário, senha, host, porta e banco de dados).
-    - Chama-se `NewMySQLClient` com a configuração criada, que utiliza a função `dsn()` do código anterior para gerar a string de conexão e estabelecer a conexão com o banco de dados MySQL.
-    - A função retorna uma instância do cliente MySQL configurado e pronto para ser utilizado em outras partes do código.
+  - Define-se uma configuração `MySQLClientConfig` com os detalhes da conexão (usuário, senha, host, porta e banco de dados).
+  - Chama-se `NewMySQLClient` com a configuração criada, que utiliza a função `dsn()` do código anterior para gerar a string de conexão e estabelecer a conexão com o banco de dados MySQL.
+  - A função retorna uma instância do cliente MySQL configurado e pronto para ser utilizado em outras partes do código.
 
 ### MySQL Client
 
@@ -138,30 +138,30 @@ func (client *MySQLClient) DB() *sql.DB {
 #### Descrição dos Componentes
 
 1. **Importações e Pacote**:
-    - `database/sql`: Pacote padrão de Go para interagir com bancos de dados SQL.
-    - `fmt`: Pacote padrão de Go para formatar strings.
-    - `_ "github.com/go-sql-driver/mysql"`: Importa o driver MySQL para `database/sql`, necessário para conectar Go com MySQL.
+   - `database/sql`: Pacote padrão de Go para interagir com bancos de dados SQL.
+   - `fmt`: Pacote padrão de Go para formatar strings.
+   - `_ "github.com/go-sql-driver/mysql"`: Importa o driver MySQL para `database/sql`, necessário para conectar Go com MySQL.
 
 2. **Estrutura `MySQLClient`**:
-    - `MySQLClientConfig config`: Configuração do cliente MySQL, que foi definida no código anterior.
-    - `*sql.DB db`: A conexão com o banco de dados.
+   - `MySQLClientConfig config`: Configuração do cliente MySQL, que foi definida no código anterior.
+   - `*sql.DB db`: A conexão com o banco de dados.
 
 3. **Função `NewMySQLClient`**:
-    - Toma uma configuração `MySQLClientConfig` e cria uma nova instância de `MySQLClient`.
-    - Chama `connect()` para estabelecer a conexão com o banco de dados.
-    - Se a conexão falhar, retorna um erro; se tiver sucesso, retorna a instância do cliente.
+   - Toma uma configuração `MySQLClientConfig` e cria uma nova instância de `MySQLClient`.
+   - Chama `connect()` para estabelecer a conexão com o banco de dados.
+   - Se a conexão falhar, retorna um erro; se tiver sucesso, retorna a instância do cliente.
 
 4. **Função `connect`**:
-    - Utiliza a função `dsn()` definida em `MySQLClientConfig` (do código anterior) para obter a string de conexão.
-    - Abre a conexão com o banco de dados com `sql.Open`.
-    - Verifica a conexão com `conn.Ping()`.
-    - Se tudo for bem-sucedido, atribui a conexão a `client.db`.
+   - Utiliza a função `dsn()` definida em `MySQLClientConfig` (do código anterior) para obter a string de conexão.
+   - Abre a conexão com o banco de dados com `sql.Open`.
+   - Verifica a conexão com `conn.Ping()`.
+   - Se tudo for bem-sucedido, atribui a conexão a `client.db`.
 
 5. **Função `Close`**:
-    - Fecha a conexão com o banco de dados se estiver aberta.
+   - Fecha a conexão com o banco de dados se estiver aberta.
 
 6. **Função `DB`**:
-    - Retorna a instância da conexão com o banco de dados.
+   - Retorna a instância da conexão com o banco de dados.
 
 ### MySQL Repository
 
@@ -172,6 +172,7 @@ package item
 
 import (
     "database/sql"
+    "time"
 )
 
 // mysqlRepository é uma implementação do repositório de itens utilizando MySQL
@@ -188,6 +189,12 @@ func NewMySqlRepository(db *sql.DB) ItemRepositoryPort {
 
 // SaveItem salva um novo item no banco de dados MySQL
 func (r *mysqlRepository) SaveItem(it *Item) error {
+    if it.CreatedAt.IsZero() {
+        it.CreatedAt = time.Now()
+    }
+    if it.UpdatedAt.IsZero() {
+        it.UpdatedAt = time.Now()
+    }
     query := `INSERT INTO items (code, title, description, price, stock, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     _, err := r.db.Exec(query, it.Code, it.Title, it.Description, it.Price, it.Stock, it.Status, it.CreatedAt, it.UpdatedAt)
     return err
@@ -197,7 +204,9 @@ func (r *mysqlRepository) SaveItem(it *Item) error {
 func (r *mysqlRepository) ListItems() (MapRepo, error) {
     query := `SELECT id, code, title, description, price, stock, status, created_at, updated_at FROM items`
     rows, err := r.db.Query(query)
-    if err != nil {
+    if err !=
+
+ nil {
         return nil, err
     }
     defer rows.Close()
@@ -205,8 +214,6 @@ func (r *mysqlRepository) ListItems() (MapRepo, error) {
     items := make(MapRepo)
     for rows.Next() {
         var it Item
-
-
         if err := rows.Scan(&it.ID, &it.Code, &it.Title, &it.Description, &it.Price, &it.Stock, &it.Status, &it.CreatedAt, &it.UpdatedAt); err != nil {
             return nil, err
         }
@@ -220,28 +227,23 @@ func (r *mysqlRepository) ListItems() (MapRepo, error) {
 #### Descrição dos Componentes
 
 1. **Importação do pacote `database/sql`**:
-    - `database/sql`: Pacote padrão de Go para interagir com bancos de dados SQL.
+   - `database/sql`: Pacote padrão de Go para interagir com bancos de dados SQL.
 
 2. **Estrutura `mysqlRepository`**:
-    - `*sql.DB db`: A conexão com o banco de dados MySQL.
+   - `*sql.DB db`: A conexão com o banco de dados MySQL.
 
 3. **Função `NewMySqlRepository`**:
-    - Cria uma nova instância de `mysqlRepository` com a conexão ao banco de dados fornecida.
-    - Retorna uma implementação de `ItemRepositoryPort`.
+   - Cria uma nova instância de `mysqlRepository` com a conexão ao banco de dados fornecida.
+   - Retorna uma implementação de `ItemRepositoryPort`.
 
 4. **Função `SaveItem`**:
-    - Salva um novo item no banco de dados MySQL.
-    - Utiliza uma consulta SQL `INSERT` para inserir os dados do item na tabela `items`.
-    - Retorna um erro se a operação falhar.
+   - Salva um novo item no banco de dados MySQL.
+   - Inicializa `CreatedAt` e `UpdatedAt` com o horário atual se estiverem zerados.
+   - Utiliza uma consulta SQL `INSERT` para inserir os dados do item na tabela `items`.
+   - Retorna um erro se a operação falhar.
 
 5. **Função `ListItems`**:
-    - Lista todos os itens do banco de dados MySQL.
-    - Utiliza uma consulta SQL `SELECT` para recuperar os dados da tabela `items`.
-    - Armazena os resultados em um mapa (`MapRepo`) e os retorna.
-    - Gerencia o fechamento das linhas (`rows`) após iterar sobre elas.
-
-### Relação com o Código Anterior
-
-- **Configuração do Cliente MySQL**: O repositório utiliza a conexão com o banco de dados fornecida pelo cliente MySQL, que foi configurado e inicializado no código anterior (`NewMySQLClient` em `mysqlsetup`).
-- **Injeção de Dependências**: A função `NewMySqlRepository` recebe uma instância de `*sql.DB`, que é a conexão com o banco de dados estabelecida pelo cliente MySQL. Essa injeção de dependências permite ao repositório interagir com o banco de dados sem se preocupar com os detalhes da conexão.
-- **Operações CRUD**: O repositório implementa operações básicas de armazenamento (`SaveItem`) e recuperação (`ListItems`) de dados no banco de dados MySQL utilizando a conexão gerenciada pelo cliente MySQL.
+   - Lista todos os itens do banco de dados MySQL.
+   - Utiliza uma consulta SQL `SELECT` para recuperar os dados da tabela `items`.
+   - Armazena os resultados em um mapa (`MapRepo`) e os retorna.
+   - Gerencia o fechamento das linhas (`rows`) após iterar sobre elas.

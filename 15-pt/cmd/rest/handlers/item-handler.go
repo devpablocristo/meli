@@ -10,19 +10,19 @@ import (
 	"api/pkg/config"
 )
 
-// handler es el manejador para las solicitudes HTTP relacionadas con los elementos
+// handler é o manipulador para as solicitações HTTP relacionadas aos itens
 type handler struct {
-	core core.ItemUsecasePort // Caso de uso de elementos
+	core core.ItemUsecasePort // Caso de uso de itens
 }
 
-// NewHandler crea una nueva instancia de handler
+// NewHandler cria uma nova instância de handler
 func NewHandler(u core.ItemUsecasePort) *handler {
 	return &handler{
 		core: u,
 	}
 }
 
-// SaveItem maneja la solicitud para guardar un nuevo elemento
+// SaveItem manipula a solicitação para salvar um novo item
 func (h *handler) SaveItem(c *gin.Context) {
 	var it item.Item
 	err := c.BindJSON(&it)
@@ -39,7 +39,7 @@ func (h *handler) SaveItem(c *gin.Context) {
 	c.JSON(http.StatusOK, "item saved successfully")
 }
 
-// ListItems maneja la solicitud para listar todos los elementos
+// ListItems manipula a solicitação para listar todos os itens
 func (h *handler) ListItems(c *gin.Context) {
 	its, err := h.core.ListItems()
 	if err != nil {
