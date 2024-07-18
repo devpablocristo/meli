@@ -1,401 +1,125 @@
-#### Configuração do Cliente MySQL
+### API de Inventário
 
-**Resumo**
+Este manual fornece instruções detalhadas sobre como configurar e executar a API de Inventário, desenvolvida em Golang utilizando MySQL como banco de dados e gerenciada por meio do Docker. Certifique-se de seguir cada passo cuidadosamente para garantir uma configuração e funcionamento corretos da aplicação.
 
-1. **Definição de Configuração**: Criar uma estrutura `MySQLClientConfig` para armazenar os detalhes de conexão e uma função para gerar a string DSN.
-2. **Configuração do Cliente**: Implementar um cliente MySQL (`MySQLClient`) que utiliza a configuração para se conectar ao banco de dados.
-3. **Injeção de Dependências**: Configurar e inicializar o cliente MySQL através da função `NewMySQLSetup`.
-4. **Repositório MySQL**: Criar um repositório (`mysqlRepository`) que utiliza o cliente MySQL para realizar operações CRUD no banco de dados.
+## Pré-requisitos
 
-- `func NewMySQLSetup() (*gosqldriver.MySQLClient, error)`:
-    - Usa `type MySQLClientConfig struct` para criar a configuração.
-    - Usa `func NewMySQLClient(config MySQLClientConfig) (*MySQLClient, error)` para criar a instância de MySQL.
-- Esta instância é injetada no repositório com `func NewMySqlRepository(db *sql.DB) ItemRepositoryPort`.
+1. Docker instalado no seu sistema.
+2. Docker Compose instalado no seu sistema.
+3. Conexão à internet para baixar as imagens necessárias do Docker.
 
----
+## Conteúdo do Repositório
 
-### Configuração MySQL
+- `Dockerfile`: Arquivo de configuração para construir a imagem da aplicação Golang.
+- `docker-compose.yml`: Arquivo de configuração para orquestrar os serviços Docker (aplicação, MySQL e phpMyAdmin).
+- `init.sql`: Script SQL para inicializar o banco de dados MySQL com o esquema necessário e o usuário da API.
+- Código-fonte da API de Inventário.
 
-Este código define uma estrutura em Go para configurar um cliente MySQL e uma função associada para gerar uma cadeia de conexão (DSN - Data Source Name).
+## Instruções de Configuração
 
-A estrutura `MySQLClientConfig` contém os parâmetros necessários para se conectar a um banco de dados MySQL. Esses parâmetros incluem o usuário, a senha, o host, a porta e o nome do banco de dados.
+### Passo 1: Configurar o Banco de Dados
 
-- **User**: O nome de usuário que será utilizado para se conectar ao banco de dados.
-- **Password**: A senha correspondente ao usuário.
-- **Host**: O endereço do host onde o banco de dados está localizado.
-- **Port**: A porta na qual o banco de dados está ouvindo.
-- **Database**: O nome do banco de dados ao qual se deseja conectar.
+Antes de iniciar os serviços Docker, é necessário garantir que o script `init.sql` seja executado para configurar o banco de dados. Este script cria o banco de dados `inventory`, a tabela `items` e um usuário da API com as permissões adequadas.
 
-A função `dsn()` (Data Source Name) gera uma cadeia de conexão (DSN) que é utilizada para se conectar ao banco de dados MySQL. Esta cadeia inclui todos os parâmetros necessários no formato adequado.
+### Passo 2: Iniciar os Serviços Docker
 
-```go
-package gosqldriver
+Utilize o Docker Compose para iniciar todos os serviços definidos no arquivo `docker-compose.yml`.
 
-import (
-    "fmt"
-)
-
-// MySQLClientConfig contém a configuração necessária para se conectar a um banco de dados MySQL
-type MySQLClientConfig struct {
-    User     string // Usuário do banco de dados
-    Password string // Senha do usuário
-    Host     string // Host onde o banco de dados está localizado
-    Port     string // Porta na qual o banco de dados está ouvindo
-    Database string // Nome do banco de dados
-}
-
-// dsn gera o Data Source Name (DSN) a partir da configuração fornecida
-func (config MySQLClientConfig) dsn() string {
-    return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-        config.User, config.Password, config.Host, config.Port, config.Database)
-}
+```sh
+docker-compose up --build
 ```
 
-Quando se cria uma instância de `MySQLClientConfig` com os detalhes da conexão ao banco de dados, pode-se chamar a função `dsn()` para obter a cadeia de conexão que será utilizada para se conectar ao MySQL.
+Este comando fará o seguinte:
 
-### Configuração MySQL
+1. Construirá a imagem da aplicação Golang.
+2. Iniciará o contêiner do MySQL.
+3. Iniciará o contêiner do phpMyAdmin.
+4. Iniciará o contêiner da aplicação Golang.
 
-O pacote `mysqlsetup` é utilizado para configurar e inicializar um cliente MySQL utilizando os detalhes de conexão definidos em uma estrutura de configuração. Este código tem uma relação direta com a estrutura e a função `dsn()` do código anterior.
+### Passo 3: Executar o Script SQL no phpMyAdmin
 
-```go
-package mysqlsetup
+Abra o seu navegador web e vá para `http://localhost:8081` para acessar o phpMyAdmin. Faça login com as seguintes credenciais:
 
-import (
-    gosqldriver "api/pkg/mysql/go-sql-driver"
-)
+- Usuário: `root`
+- Senha: `root`
 
-// NewMySQLSetup configura e retorna um novo cliente MySQL
-func
+Uma vez dentro do phpMyAdmin, siga estes passos:
 
- NewMySQLSetup() (*gosqldriver.MySQLClient, error) {
-    config := gosqldriver.MySQLClientConfig{
-        User:     "api_user",
-        Password: "api_password",
-        Host:     "mysql",
-        Port:     "3306",
-        Database: "inventory",
+1. Selecione o banco de dados `inventory`.
+2. Vá para a aba "SQL".
+3. Copie e cole o conteúdo do arquivo `init.sql`.
+4. Execute o script.
+
+Isso inicializará o banco de dados e configurará o usuário necessário para a API.
+
+### Passo 4: Verificar o Funcionamento da API
+
+Uma vez que todos os contêineres estejam em funcionamento e o banco de dados esteja configurado, você pode verificar o funcionamento da API acessando `http://localhost:8080` no seu navegador web ou utilizando ferramentas como `curl` ou `Postman` para interagir com os endpoints `/items`.
+
+### Endpoints da API
+
+- **POST /items**: Criar um novo item no inventário.
+  - Corpo JSON:
+    ```json
+    {
+      "id": 1,
+      "code": "ITEM001",
+      "title": "Example Item",
+      "description": "This is an example item",
+      "price": 29.99,
+      "stock": 50,
+      "status": "available",
+      "created_at": "2024-07-17T15:04:05Z",
+      "updated_at": "2024-07-17T15:04:05Z"
     }
-    return gosqldriver.NewMySQLClient(config)
-}
+    ```
+
+- **GET /items**: Obter uma lista de todos os itens no inventário.
+
+### Exemplo de Uso com `curl`
+
+#### Criar um Novo Item
+
+```sh
+curl -X POST http://localhost:8080/items -H "Content-Type: application/json" -d '{
+  "id": 1,
+  "code": "ITEM001",
+  "title": "Example Item",
+  "description": "This is an example item",
+  "price": 29.99,
+  "stock": 50,
+  "status": "available",
+  "created_at": "2024-07-17T15:04:05Z",
+  "updated_at": "2024-07-17T15:04:05Z"
+}'
 ```
 
-- **Importação do Pacote**: Importa-se o pacote `gosqldriver` que contém a implementação do cliente MySQL.
-- **Função `NewMySQLSetup`**:
-  - Define-se uma configuração `MySQLClientConfig` com os detalhes da conexão (usuário, senha, host, porta e banco de dados).
-  - Chama-se `NewMySQLClient` com a configuração criada, que utiliza a função `dsn()` do código anterior para gerar a cadeia de conexão e estabelecer a conexão com o banco de dados MySQL.
-  - A função retorna uma instância do cliente MySQL configurado e pronto para ser utilizado em outras partes do código.
+#### Obter a Lista de Itens
 
-### Cliente MySQL
-
-Este código define um cliente MySQL em Go que interage com um banco de dados MySQL utilizando a configuração fornecida. A seguir, explicam-se os componentes e sua relação com o código anterior.
-
-```go
-package gosqldriver
-
-import (
-    "database/sql"
-    "fmt"
-
-    _ "github.com/go-sql-driver/mysql"
-)
-
-// MySQLClient representa um cliente para interagir com um banco de dados MySQL
-type MySQLClient struct {
-    config MySQLClientConfig // Configuração do cliente MySQL
-    db     *sql.DB           // Conexão com o banco de dados
-}
-
-// NewMySQLClient cria uma nova instância de MySQLClient e estabelece a conexão com o banco de dados
-func NewMySQLClient(config MySQLClientConfig) (*MySQLClient, error) {
-    client := &MySQLClient{config: config}
-    err := client.connect()
-    if err != nil {
-        return nil, fmt.Errorf("failed to initialize MySQLClient: %v", err)
-    }
-    return client, nil
-}
-
-// connect estabelece a conexão com o banco de dados MySQL utilizando a configuração fornecida
-func (client *MySQLClient) connect() error {
-    dsn := client.config.dsn()
-    conn, err := sql.Open("mysql", dsn)
-    if err != nil {
-        return fmt.Errorf("failed to connect to MySQL: %w", err)
-    }
-    if err := conn.Ping(); err != nil {
-        return fmt.Errorf("failed to ping MySQL: %w", err)
-    }
-    client.db = conn
-    return nil
-}
-
-// Close fecha a conexão com o banco de dados MySQL
-func (client *MySQLClient) Close() {
-    if client.db != nil {
-        client.db.Close()
-    }
-}
-
-// DB retorna a conexão com o banco de dados MySQL
-func (client *MySQLClient) DB() *sql.DB {
-    return client.db
-}
+```sh
+curl http://localhost:8080/items
 ```
 
-#### Descrição dos Componentes
+## Solução de Problemas
 
-1. **Importações e Pacote**:
-   - `database/sql`: Pacote padrão de Go para interagir com bancos de dados SQL.
-   - `fmt`: Pacote padrão de Go para formatar strings.
-   - `_ "github.com/go-sql-driver/mysql"`: Importa o driver MySQL para `database/sql`, necessário para conectar Go com MySQL.
+### Erro de Conexão ao MySQL
 
-2. **Estrutura `MySQLClient`**:
-   - `MySQLClientConfig config`: Configuração do cliente MySQL, que foi definida no código anterior.
-   - `*sql.DB db`: A conexão com o banco de dados.
+Se a aplicação Golang não conseguir se conectar ao MySQL, certifique-se de que:
 
-3. **Função `NewMySQLClient`**:
-   - Toma uma configuração `MySQLClientConfig` e cria uma nova instância de `MySQLClient`.
-   - Chama `connect()` para estabelecer a conexão com o banco de dados.
-   - Se a conexão falhar, retorna um erro; se tiver sucesso, retorna a instância do cliente.
+1. O contêiner do MySQL está em funcionamento.
+2. O script `init.sql` foi executado corretamente.
+3. As credenciais do banco de dados no código de configuração coincidem com as do script `init.sql`.
 
-4. **Função `connect`**:
-   - Utiliza a função `dsn()` definida em `MySQLClientConfig` (do código anterior) para obter a string de conexão.
-   - Abre a conexão com o banco de dados com `sql.Open`.
-   - Verifica a conexão com `conn.Ping()`.
-   - Se tudo for bem-sucedido, atribui a conexão a `client.db`.
+### Verificação de Logs
 
-5. **Função `Close`**:
-   - Fecha a conexão com o banco de dados se estiver aberta.
+Você pode verificar os logs dos contêineres Docker para obter mais detalhes sobre qualquer erro.
 
-6. **Função `DB`**:
-   - Retorna a instância da conexão com o banco de dados.
-
-### Repositório MySQL
-
-Este código define um repositório em Go que utiliza um banco de dados MySQL para armazenar e recuperar itens. A seguir, explicam-se os componentes e sua relação com o código anterior.
-
-```go
-package item
-
-import (
-    "database/sql"
-    "time"
-)
-
-// mysqlRepository é uma implementação do repositório de itens utilizando MySQL
-type mysqlRepository struct {
-    db *sql.DB // Conexão com o banco de dados MySQL
-}
-
-// NewMySqlRepository cria uma nova instância de mysqlRepository
-func NewMySqlRepository(db *sql.DB) ItemRepositoryPort {
-    return &mysqlRepository{
-        db: db,
-    }
-}
-
-// SaveItem salva um novo item no banco de dados MySQL
-func (r *mysqlRepository) SaveItem(it *Item) error {
-    if it.CreatedAt.IsZero() {
-        it.CreatedAt = time.Now()
-    }
-    if it.UpdatedAt.IsZero() {
-        it.UpdatedAt = time.Now()
-    }
-    query := `INSERT INTO items (code, title, description, price, stock, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-    _, err := r.db.Exec(query, it.Code, it.Title, it.Description, it.Price, it.Stock, it.Status, it.CreatedAt, it.UpdatedAt)
-    return err
-}
-
-// ListItems lista todos os itens do banco de dados MySQL
-func (r *mysqlRepository) ListItems() (MapRepo, error) {
-    query := `SELECT id, code, title, description, price, stock, status, created_at, updated_at FROM items`
-    rows, err := r.db.Query(query)
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
-
-    items := make(MapRepo)
-    for rows.Next() {
-        var it Item
-        if err := rows.Scan(&it.ID, &it.Code, &it.Title, &it.Description, &it.Price, &it.Stock, &it.Status, &it.CreatedAt, &it.UpdatedAt); err != nil {
-            return nil, err
-        }
-        items[it.ID] = it
-    }
-
-    return items, nil
-}
+```sh
+docker-compose logs app
+docker-compose logs mysql
+docker-compose logs phpmyadmin
 ```
 
-#### Descrição dos Componentes
+## Conclusão
 
-1. **Importação do pacote `database/sql`**:
-   - `database/sql`: Pacote padrão de Go para interagir com bancos de dados SQL.
-
-2. **Estrutura `mysqlRepository`**:
-   - `*sql.DB db`: A conexão com o banco de dados MySQL.
-
-3. **Função `NewMySqlRepository`**:
-   - Cria uma nova instância de `mysqlRepository` com a conexão ao banco de dados fornecida.
-   - Retorna uma implementação de `ItemRepositoryPort`.
-
-4. **Função `SaveItem`**:
-   - Salva um novo item no banco de dados MySQL.
-   - Inicializa `CreatedAt` e `UpdatedAt` com o horário atual se estiverem zerados.
-   - Utiliza uma consulta SQL `INSERT` para inserir os dados do item na tabela `items`.
-   - Retorna um erro se a operação falhar.
-
-5. **Função `ListItems`**:
-   - Lista todos os itens do banco de dados MySQL.
-   - Utiliza uma consulta SQL `SELECT` para recuperar os dados da tabela `items`.
-   - Armazena os resultados em um mapa (`MapRepo`) e os retorna.
-   - Gerencia o fechamento das linhas (`rows`) após iterar sobre elas.
-
-### Caso de Uso para Itens
-
-O seguinte código define um caso de uso para os itens (`ItemUsecase`) que utiliza dois repositórios (um baseado em MySQL e outro em um mapa em memória) para armazenar e recuperar itens.
-
-```go
-package core
-
-import (
-    "fmt"
-    "time"
-
-    "api/internal/core/item"
-)
-
-// ItemUsecase representa o caso de uso para os itens
-type ItemUsecase struct {
-    mysqlRepo item.ItemRepositoryPort // Repositório de MySQL
-    mapRepo   item.ItemRepositoryPort // Repositório de Map
-}
-
-// NewItemUsecase cria uma nova instância de ItemUsecase
-func NewItemUsecase(mysqlRepo, mapRepo item.ItemRepositoryPort) ItemUsecasePort {
-    return &ItemUsecase{
-        mysqlRepo: mysqlRepo,
-        mapRepo:   mapRepo,
-    }
-}
-
-// SaveItem salva um novo item em ambos os repositórios
-func (u *ItemUsecase) SaveItem(it item.Item) error {
-    now := time.Now()
-    it.CreatedAt = now
-    it.UpdatedAt = now
-
-    if err := u.mysqlRepo.SaveItem(&it); err != nil {
-        return fmt.Errorf("error saving item in MySQL: %w", err)
-    }
-    if err := u.mapRepo.SaveItem(&it); err != nil {
-        return fmt.Errorf("error saving item in MapRepo: %w", err)
-    }
-    return nil
-}
-
-// ListItems lista todos os itens de ambos
-
- os repositórios e os combina
-func (u *ItemUsecase) ListItems() (item.MapRepo, error) {
-    mysqlItems, err := u.mysqlRepo.ListItems()
-    if err != nil {
-        return nil, fmt.Errorf("error listing items from MySQL: %w", err)
-    }
-
-    mapItems, err := u.mapRepo.ListItems()
-    if err != nil {
-        return nil, fmt.Errorf("error listing items from MapRepo: %w", err)
-    }
-
-    // Combina os resultados de ambos os repositórios
-    for k, v := range mapItems {
-        mysqlItems[k] = v
-    }
-
-    return mysqlItems, nil
-}
-```
-
-### Handlers HTTP
-
-O seguinte código define manipuladores HTTP (`handler`) que utilizam o caso de uso (`ItemUsecase`) para processar solicitações relacionadas aos itens. Eles são utilizados para salvar novos itens e listar todos os itens.
-
-```go
-package handler
-
-import (
-    "net/http"
-
-    "github.com/gin-gonic/gin"
-
-    "api/internal/core"
-    "api/internal/core/item"
-    "api/pkg/config"
-)
-
-// handler é o manipulador para as solicitações HTTP relacionadas aos itens
-type handler struct {
-    core core.ItemUsecasePort // Caso de uso de itens
-}
-
-// NewHandler cria uma nova instância de handler
-func NewHandler(u core.ItemUsecasePort) *handler {
-    return &handler{
-        core: u,
-    }
-}
-
-// SaveItem manipula a solicitação para salvar um novo item
-func (h *handler) SaveItem(c *gin.Context) {
-    var it item.Item
-
-    err := c.BindJSON(&it)
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
-
-    if err := h.core.SaveItem(it); err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        return
-    }
-
-    c.JSON(http.StatusOK, "item saved successfully")
-}
-
-// ListItems manipula a solicitação para listar todos os itens
-func (h *handler) ListItems(c *gin.Context) {
-    its, err := h.core.ListItems()
-    if err != nil {
-        if err == config.ErrNotFound {
-            c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-        } else {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-        }
-        return
-    }
-
-    c.JSON(http.StatusOK, its)
-}
-```
-
-### Exemplo de Uso com JSON
-
-Para testar o código e verificar se ele funciona corretamente, você pode utilizar o seguinte JSON para salvar um novo item:
-
-```json
-{
-  "id": 100,
-  "code": "ABC123",
-  "title": "Sample Item",
-  "description": "This is a sample item.",
-  "price": 19.99,
-  "stock": 100,
-  "status": "Available",
-  "created_at": "2024-07-17T10:53:22.123456789Z",
-  "updated_at": "2024-07-17T10:53:22.123456789Z"
-}
-```
+Seguindo estes passos, você deverá ser capaz de configurar e executar corretamente a API de Inventário. Se encontrar algum problema, consulte os logs dos contêineres Docker e certifique-se de que todos os serviços estão configurados corretamente.
