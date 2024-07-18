@@ -22,7 +22,7 @@ services:
       - "3306:3306"         # Publica a porta 3306 do contêiner na porta 3306 do host
     volumes:
       - mysql_data:/var/lib/mysql         # Volume para persistir os dados do MySQL
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # Arquivo SQL para inicializar o banco de dados
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql # Arquivo SQL para inicializar o banco de dados
 
   phpmyadmin:
     image: phpmyadmin:5.2.1-apache        # Imagem do phpMyAdmin versão 5.2.1 com Apache
