@@ -8,6 +8,7 @@ import (
 	handler "api/cmd/rest/handlers"
 	core "api/internal/core"
 	item "api/internal/core/item"
+	mongodbsetup "api/internal/platform/mongodb"
 	mysqlsetup "api/internal/platform/mysql"
 )
 
@@ -15,16 +16,23 @@ func main() {
 	// Configurar MySQL
 	mysqlClient, err := mysqlsetup.NewMySQLSetup()
 	if err != nil {
-		log.Fatalf("Não foi possível configurar o MySQL: %v", err)
+		log.Fatalf("não foi possível configurar o MySQL: %v", err)
 	}
 	defer mysqlClient.Close()
 
+	mongoDBClient, err := mongodbsetup.NewMongoDBSetup()
+	if err != nil {
+		log.Fatalf("não foi possível configurar o MongoDB: %v", err)
+	}
+	defer mongoDBClient.Close()
+
 	// Inicializar repositórios
-	mapRepo := item.NewRepository()
+	//mapRepo := item.NewRepository()
 	mysqlRepo := item.NewMySqlRepository(mysqlClient.DB())
+	mongoDBRepo := item.NewMongoDBRepository(mongoDBClient.DB())
 
 	// Inicializar caso de uso com ambos repositórios
-	usecase := core.NewItemUsecase(mysqlRepo, mapRepo)
+	usecase := core.NewItemUsecase(mysqlRepo, mongoDBRepo)
 
 	// Inicializar handlers
 	handler := handler.NewHandler(usecase)

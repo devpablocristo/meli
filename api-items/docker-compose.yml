@@ -2,37 +2,73 @@ version: '3.8'
 
 services:
   app:
-    # Seção de construção do serviço da aplicação
     build:
-      context: .            # Contexto de construção, utiliza o diretório atual
-      dockerfile: Dockerfile # Dockerfile a ser usado para construir a imagem
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "8080:8080"         # Publica a porta 8080 do contêiner na porta 8080 do host
+      - "8080:8080"
     depends_on:
-      - mysql               # O serviço 'app' depende do serviço 'mysql', ou seja, será iniciado após 'mysql'
+      - mysql
+      - mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootpassword
+      - MONGO_HOST=mongodb
+      - MONGO_PORT=27017
+      - MONGO_DATABASE=inventory
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=inventory
+      - MYSQL_PASSWORD=api_password
 
   mysql:
-    image: mysql:8.0        # Imagem do MySQL versão 8.0
+    image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: root         # Senha do usuário root do MySQL
-      MYSQL_DATABASE: inventory         # Banco de dados que será criado no MySQL
-      MYSQL_USER: api_user              # Usuário que será criado no MySQL
-      MYSQL_PASSWORD: api_password      # Senha para o usuário 'api_user'
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: inventory
+      MYSQL_USER: api_user
+      MYSQL_PASSWORD: api_password
     ports:
-      - "3306:3306"         # Publica a porta 3306 do contêiner na porta 3306 do host
+      - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql         # Volume para persistir os dados do MySQL
-      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql # Arquivo SQL para inicializar o banco de dados
+      - mysql_data:/var/lib/mysql
 
   phpmyadmin:
-    image: phpmyadmin:5.2.1-apache        # Imagem do phpMyAdmin versão 5.2.1 com Apache
+    image: phpmyadmin:5.2.1-apache
     environment:
-      PMA_HOST: mysql                    # Host do MySQL ao qual o phpMyAdmin se conectará
-      MYSQL_ROOT_PASSWORD: root          # Senha do usuário root do MySQL
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: root
     ports:
-      - "8081:80"         # Publica a porta 80 do contêiner na porta 8081 do host
+      - "8081:80"
     depends_on:
-      - mysql            # O serviço 'phpmyadmin' depende do serviço 'mysql', ou seja, será iniciado após 'mysql'
+      - mysql
+
+  mongodb:
+    image: mongo:5.0.28
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  mongo-express:
+    image: mongo-express:1.0.2-20-alpine3.19
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: rootpassword
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_URL: mongodb://root:rootpassword@mongodb:27017/
+    ports:
+      - "8082:8081"
+    depends_on:
+      - mongodb
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
-  mysql_data:              # Definição do volume para persistir os dados do MySQL
+  mysql_data:
+  mongodb_data:
