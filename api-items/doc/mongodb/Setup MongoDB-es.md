@@ -91,7 +91,7 @@ La estructura `MongoDBClientConfig` contiene los parámetros necesarios para con
 - **Port**: El puerto en el que la base de datos está escuchando.
 - **Database**: El nombre de la base de datos a la cual se desea conectar.
 
-La función `uri()` genera una cadena de conexión (URI) que se utiliza para conectarse a la base de datos MongoDB. Esta cadena incluye todos los parámetros necesarios en el formato adecuado.
+La función `dns()` genera una cadena de conexión (URI) que se utiliza para conectarse a la base de datos MongoDB. Esta cadena incluye todos los parámetros necesarios en el formato adecuado.
 
 ```go
 package mongodbdriver
@@ -109,8 +109,8 @@ type MongoDBClientConfig struct {
     Database string // Nombre de la base de datos
 }
 
-// uri genera el URI de conexión a MongoDB a partir de la configuración proporcionada
-func (config MongoDBClientConfig) uri() string {
+// dns genera el URI de conexión a MongoDB a partir de la configuración proporcionada
+func (config MongoDBClientConfig) dns() string {
     return fmt.Sprintf("mongodb://%s:%s@%s:%s/%s",
         config.User, config.Password, config.Host, config.Port, config.Database)
 }
@@ -153,8 +153,8 @@ func (client *MongoDBClient) connect() error {
     ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
     defer cancel()
 
-    uri := client.config.uri()
-    mongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
+    dns := client.config.dns()
+    mongoClient, err := mongo.Connect(ctx, options.Client().ApplyURI(dns))
     if err != nil {
         return fmt.Errorf("failed to connect to MongoDB: %w", err)
     }
