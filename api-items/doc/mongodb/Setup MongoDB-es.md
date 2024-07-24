@@ -79,7 +79,7 @@ db.createUser({
 })
 ```
 
-- NOTA: probablmente sea necesario volver reiniciar el contenedor de la api (`app` en este caso)
+**Nota:** Probablmente sea necesario reiniciar el contenedor de la api (`app` en este caso).
 
 #### Paso 2: Definición de Configuración
 

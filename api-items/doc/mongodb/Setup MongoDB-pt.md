@@ -1,32 +1,97 @@
-## Setup Cliente MongoDB
+## Configuração do Cliente MongoDB
 
-**Resumo**
+### Resumo
 
-1. **Definição de Configuração**: Criar uma estrutura `MongoDBClientConfig` para armazenar os detalhes de conexão e uma função para gerar a cadeia de conexão (URI).
-2. **Configuração do Cliente**: Implementar um cliente MongoDB (`MongoDBClient`) que utiliza a configuração para conectar-se ao banco de dados.
-3. **Injeção de Dependências**: Configurar e inicializar o cliente MongoDB através da função `NewMongoDBSetup`.
-4. **Repositório MongoDB**: Criar um repositório (`mongoRepository`) que utiliza o cliente MongoDB para realizar operações CRUD no banco de dados.
+1. **Inicialização do MongoDB com Docker Compose**: Crie banco de dados, usuário e senha.
+2. **Definição de Configuração**: Crie uma estrutura `MongoDBClientConfig` para armazenar os detalhes de conexão e uma função para gerar a string de conexão (URI).
+3. **Configuração do Cliente**: Implemente um cliente MongoDB (`MongoDBClient`) que utiliza a configuração para se conectar ao banco de dados.
+4. **Injeção de Dependências**: Configure e inicialize o cliente MongoDB através da função `NewMongoDBSetup`.
+5. **Repositório MongoDB**: Crie um repositório (`mongoRepository`) que utiliza o cliente MongoDB para realizar operações CRUD no banco de dados.
 
-- `func NewMongoDBSetup() (*mongodbdriver.MongoDBClient, error)`:
-    - Usa `type MongoDBClientConfig struct` para criar a configuração.
-    - Usa `func NewMongoDBClient(config MongoDBClientConfig) (*MongoDBClient, error)` para criar a instância do MongoDB.
-- Esta instância é injetada no repositório com `func NewMongoRepository(db *mongo.Database) ItemRepositoryPort`.
+### Passos
 
----
+#### Passo 1: Inicialização do MongoDB com Docker Compose
 
-### Configuração MongoDB
+#### Configuração do Contêiner MongoDB:
 
-Este código define uma estrutura em Go para configurar um cliente MongoDB e uma função associada para gerar uma cadeia de conexão (URI).
+- **MONGO_INITDB_ROOT_USERNAME**: Define o nome do usuário root que será criado ao inicializar o banco de dados.
+- **MONGO_INITDB_ROOT_PASSWORD**: Define a senha para o usuário root que será criado ao inicializar o banco de dados.
 
-A estrutura `MongoDBClientConfig` contém os parâmetros necessários para conectar-se a um banco de dados MongoDB. Esses parâmetros incluem o usuário, a senha, o host, a porta e o nome do banco de dados.
+#### Configuração do Contêiner Mongo Express:
 
-- **User**: O nome de usuário que será utilizado para conectar-se ao banco de dados.
+- **ME_CONFIG_MONGODB_ADMINUSERNAME**: Define o nome do usuário que Mongo Express usará para se conectar ao MongoDB como administrador.
+- **ME_CONFIG_MONGODB_ADMINPASSWORD**: Define a senha que Mongo Express usará para se conectar ao MongoDB como administrador.
+
+**Nota:** As credenciais devem ser as mesmas tanto para MongoDB quanto para Mongo Express. Isso garante que Mongo Express possa se conectar ao MongoDB com permissões de administrador.
+
+### Exemplo de configuração em `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootpassword
+    ports:
+      - "27017:27017"
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=rootpassword
+      - ME_CONFIG_MONGODB_URL=mongodb://root:rootpassword@mongodb:27017/
+    ports:
+      - "8082:8081"
+```
+
+Nesta configuração:
+- **MONGO_INITDB_ROOT_USERNAME** e **MONGO_INITDB_ROOT_PASSWORD** configuram o usuário root do MongoDB.
+- **ME_CONFIG_MONGODB_ADMINUSERNAME** e **ME_CONFIG_MONGODB_ADMINPASSWORD** configuram Mongo Express para usar o usuário root do MongoDB para se conectar.
+
+### Acesso ao Mongo Express
+
+Você pode ver os usuários no Mongo Express acessando: [http://localhost:8082/db/admin/system.users](http://localhost:8082/db/admin/system.users)
+
+### Acesso à linha de comando do MongoDB
+
+Você pode acessar a linha de comando do MongoDB usando o seguinte comando:
+
+```sh
+$ docker exec -it mongodb mongo -u root -p rootpassword --authenticationDatabase admin
+```
+
+### Criação de um Usuário no Banco de Dados `inventory`
+
+Para criar um usuário com permissões de leitura e escrita no banco de dados `inventory`, utilize o seguinte comando:
+
+```sh
+use inventory
+db.createUser({
+    user: "api_user",
+    pwd: "api_password",
+    roles: [{ role: "readWrite", db: "inventory" }]
+})
+```
+
+- NOTA: provavelmente seja necessário reiniciar o contêiner da API (`app` neste caso)
+
+#### Passo 2: Definição de Configuração
+
+A estrutura `MongoDBClientConfig` contém os parâmetros necessários para se conectar a um banco de dados MongoDB. Esses parâmetros incluem o usuário, a senha, o host, a porta e o nome do banco de dados.
+
+- **User**: O nome do usuário que será utilizado para se conectar ao banco de dados.
 - **Password**: A senha correspondente ao usuário.
-- **Host**: O endereço do host onde o banco de dados está localizado.
-- **Port**: A porta na qual o banco de dados está escutando.
+- **Host**: O endereço do host onde está o banco de dados.
+- **Port**: A porta em que o banco de dados está ouvindo.
 - **Database**: O nome do banco de dados ao qual se deseja conectar.
 
-A função `uri()` gera uma cadeia de conexão (URI) que é utilizada para conectar-se ao banco de dados MongoDB. Esta cadeia inclui todos os parâmetros necessários no formato adequado.
+A função `uri()` gera uma string de conexão (URI) que é utilizada para se conectar ao banco de dados MongoDB. Esta string inclui todos os parâmetros necessários no formato adequado.
 
 ```go
 package mongodbdriver
@@ -35,59 +100,25 @@ import (
     "fmt"
 )
 
-// MongoDBClientConfig contém a configuração necessária para conectar-se a um banco de dados MongoDB
+// MongoDBClientConfig contém a configuração necessária para se conectar a um banco de dados MongoDB
 type MongoDBClientConfig struct {
     User     string // Usuário do banco de dados
     Password string // Senha do usuário
-    Host     string // Host onde o banco de dados está localizado
-    Port     string // Porta na qual o banco de dados está escutando
+    Host     string // Host onde está o banco de dados
+    Port     string // Porta em que o banco de dados está ouvindo
     Database string // Nome do banco de dados
 }
 
-// uri gera o URI de conexão ao MongoDB a partir da configuração fornecida
+// uri gera a URI de conexão ao MongoDB a partir da configuração fornecida
 func (config MongoDBClientConfig) uri() string {
     return fmt.Sprintf("mongodb://%s:%s@%s:%s/%s",
         config.User, config.Password, config.Host, config.Port, config.Database)
 }
 ```
 
-Quando uma instância de `MongoDBClientConfig` é criada com os detalhes de conexão ao banco de dados, pode-se chamar a função `uri()` para obter a cadeia de conexão que será utilizada para conectar-se ao MongoDB.
+#### Passo 3: Configuração do Cliente
 
-### Configuração MongoDB
-
-O pacote `mongodbsetup` é utilizado para configurar e inicializar um cliente MongoDB utilizando os detalhes de conexão definidos em uma estrutura de configuração. Este código tem uma relação direta com a estrutura e a função `uri()` do código anterior.
-
-```go
-package mongodbsetup
-
-import (
-    "context"
-    "time"
-    mongodriver "api/pkg/mongodbdriver"
-)
-
-// NewMongoDBSetup configura e retorna um novo cliente MongoDB
-func NewMongoDBSetup() (*mongodriver.MongoDBClient, error) {
-    config := mongodriver.MongoDBClientConfig{
-        User:     "root",
-        Password: "rootpassword",
-        Host:     "mongodb",
-        Port:     "27017",
-        Database: "inventory",
-    }
-    return mongodriver.NewMongoDBClient(config)
-}
-```
-
-- **Importação do Pacote**: Importa-se o pacote `mongodriver` que contém a implementação do cliente MongoDB.
-- **Função `NewMongoDBSetup`**:
-  - Define uma configuração `MongoDBClientConfig` com os detalhes de conexão (usuário, senha, host, porta e banco de dados).
-  - Chama `NewMongoDBClient` com a configuração criada, que utiliza a função `uri()` do código anterior para gerar a cadeia de conexão e estabelecer a conexão com o banco de dados MongoDB.
-  - A função retorna uma instância do cliente MongoDB configurado e pronto para ser utilizado em outras partes do código.
-
-### Cliente MongoDB
-
-Este código define um cliente MongoDB em Go que interage com um banco de dados MongoDB utilizando a configuração fornecida. A seguir, explicam-se os componentes e sua relação com o código anterior.
+O código a seguir define um cliente MongoDB em Go que interage com um banco de dados MongoDB utilizando a configuração fornecida.
 
 ```go
 package mongodbdriver
@@ -134,52 +165,48 @@ func (client *MongoDBClient) connect() error {
     return nil
 }
 
-// Close fecha a conexão com o banco de dados MongoDB
+// Close fecha a conexão ao banco de dados MongoDB
 func (client *MongoDBClient) Close(ctx context.Context) {
     if client.db != nil {
         client.db.Client().Disconnect(ctx)
     }
 }
 
-// DB retorna a conexão com o banco de dados MongoDB
+// DB retorna a conexão ao banco de dados MongoDB
 func (client *MongoDBClient) DB() *mongo.Database {
     return client.db
 }
 ```
 
-#### Descrição dos Componentes
+#### Passo 4: Injeção de Dependências
 
-1. **Importações e Pacote**:
-   - `context`: Pacote padrão de Go para lidar com contextos.
-   - `fmt`: Pacote padrão de Go para formatar cadeias de caracteres.
-   - `time`: Pacote padrão de Go para lidar com tempos.
-   - `go.mongodb.org/mongo-driver/mongo`: Pacote para interagir com MongoDB em Go.
-   - `go.mongodb.org/mongo-driver/mongo/options`: Pacote para opções de conexão com MongoDB.
+A função `NewMongoDBSetup` configura e inicializa o cliente MongoDB utilizando os detalhes de conexão definidos em `MongoDBClientConfig`.
 
-2. **Estrutura `MongoDBClient`**:
-   - `MongoDBClientConfig config`: Configuração do cliente MongoDB, que foi definida no código anterior.
-   - `*mongo.Database db`: A conexão com o banco de dados.
+```go
+package mongodbsetup
 
-3. **Função `NewMongoDBClient`**:
-   - Toma uma configuração `MongoDBClientConfig` e cria uma nova instância de `MongoDBClient`.
-   - Chama `connect()` para estabelecer a conexão com o banco de dados.
-   - Se a conexão falhar, retorna um erro; se tiver sucesso, retorna a instância do cliente.
+import (
+    "context"
+    "time"
+    mongodriver "api/pkg/mongodbdriver"
+)
 
-4. **Função `connect`**:
-   - Utiliza a função `uri()` definida em `MongoDBClientConfig` (do código anterior) para obter a cadeia de conexão.
-   - Abre a conexão com o banco de dados com `mongo.Connect`.
-   - Verifica a conexão com `mongoClient.Ping`.
-   - Se tudo for bem-sucedido, atribui a conexão a `client.db`.
+// NewMongoDBSetup configura e retorna um novo cliente MongoDB
+func NewMongoDBSetup() (*mongodriver.MongoDBClient, error) {
+    config := mongodriver.MongoDBClientConfig{
+        User:     "api_user",
+        Password: "api_password",
+        Host:     "mongodb",
+        Port:     "27017",
+        Database: "inventory",
+    }
+    return mongodriver.NewMongoDBClient(config)
+}
+```
 
-5. **Função `Close`**:
-   - Fecha a conexão com o banco de dados se estiver aberta.
+#### Passo 5: Repositório MongoDB
 
-6. **Função `DB`**:
-   - Retorna a instância da conexão com o banco de dados.
-
-### Repositório MongoDB
-
-Este código define um repositório em Go que utiliza um banco de dados MongoDB para armazenar e recuperar itens. A seguir, explicam-se os componentes e sua relação com o código anterior.
+Este código define um repositório em Go que utiliza um banco de dados MongoDB para armazenar e recuperar itens.
 
 ```go
 package item
@@ -209,9 +236,7 @@ func (r *mongoRepository) SaveItem(ctx context.Context, it *Item) error {
     if it.CreatedAt.IsZero() {
         it.CreatedAt = time.Now()
     }
-    if it.UpdatedAt.IsZero()
-
- {
+    if it.UpdatedAt.IsZero() {
         it.UpdatedAt = time.Now()
     }
     _, err := r.db.Collection("items").InsertOne(ctx, it)
@@ -224,7 +249,9 @@ func (r *mongoRepository) ListItems(ctx context.Context) (MapRepo, error) {
     if err != nil {
         return nil, err
     }
-    defer cursor.Close(ctx)
+    defer cursor
+
+.Close(ctx)
 
     items := make(MapRepo)
     for cursor.Next(ctx) {
@@ -242,101 +269,90 @@ func (r *mongoRepository) ListItems(ctx context.Context) (MapRepo, error) {
 }
 ```
 
-#### Descrição dos Componentes
+### Exemplo Completo
 
-1. **Importações e Pacote**:
-   - `context`: Pacote padrão de Go para lidar com contextos.
-   - `time`: Pacote padrão de Go para lidar com tempos.
-   - `go.mongodb.org/mongo-driver/bson`: Pacote para lidar com BSON (Binary JSON) no MongoDB.
-   - `go.mongodb.org/mongo-driver/mongo`: Pacote para interagir com MongoDB em Go.
+O exemplo a seguir combina todos os passos anteriores para configurar uma API REST em Go que utiliza MongoDB como banco de dados.
 
-2. **Estrutura `mongoRepository`**:
-   - `*mongo.Database db`: A conexão com o banco de dados MongoDB.
+#### Configuração de MySQL (opcional)
 
-3. **Função `NewMongoRepository`**:
-   - Cria uma nova instância de `mongoRepository` com a conexão ao banco de dados fornecida.
-   - Retorna uma implementação de `ItemRepositoryPort`.
-
-4. **Função `SaveItem`**:
-   - Salva um novo item no banco de dados MongoDB.
-   - Inicializa `CreatedAt` e `UpdatedAt` com a hora atual se estiverem vazios.
-   - Utiliza `InsertOne` para inserir os dados do item na coleção `items`.
-   - Retorna um erro se a operação falhar.
-
-5. **Função `ListItems`**:
-   - Lista todos os itens do banco de dados MongoDB.
-   - Utiliza `Find` para recuperar os dados da coleção `items`.
-   - Itera sobre o cursor e decodifica cada documento em um mapa (`MapRepo`).
-   - Gerencia o fechamento do cursor e retorna os itens listados.
-
-### Caso de Uso para Itens
-
-O código a seguir define um caso de uso para os itens (`ItemUsecase`) que utiliza dois repositórios (um baseado em MongoDB e outro em um mapa na memória) para armazenar e recuperar itens.
+Se também estiver utilizando MySQL em seu projeto, você pode configurar o cliente MySQL da seguinte forma:
 
 ```go
-package core
+package mysqlsetup
 
 import (
-    "context"
-    "fmt"
-    "time"
-
-    "api/internal/core/item"
+    gosqldriver "api/pkg/mysql/go-sql-driver"
 )
 
-// ItemUsecase representa o caso de uso para os itens
-type ItemUsecase struct {
-    mongoRepo item.ItemRepositoryPort // Repositório de MongoDB
-    mapRepo   item.ItemRepositoryPort // Repositório de Map
-}
-
-// NewItemUsecase cria uma nova instância de ItemUsecase
-func NewItemUsecase(mongoRepo, mapRepo item.ItemRepositoryPort) ItemUsecasePort {
-    return &ItemUsecase{
-        mongoRepo: mongoRepo,
-        mapRepo:   mapRepo,
+// NewMySQLSetup configura e retorna um novo cliente MySQL
+func NewMySQLSetup() (*gosqldriver.MySQLClient, error) {
+    config := gosqldriver.MySQLClientConfig{
+        User:     "api_user",
+        Password: "api_password",
+        Host:     "mysql",
+        Port:     "3306",
+        Database: "inventory",
     }
+    return gosqldriver.NewMySQLClient(config)
 }
+```
 
-// SaveItem salva um novo item em ambos os repositórios
-func (u *ItemUsecase) SaveItem(ctx context.Context, it item.Item) error {
-    now := time.Now()
-    it.CreatedAt = now
-    it.UpdatedAt = now
+#### Configuração do Servidor
 
-    if err := u.mongoRepo.SaveItem(ctx, &it); err != nil {
-        return fmt.Errorf("error saving item in MongoDB: %w", err)
-    }
-    if err := u.mapRepo.SaveItem(ctx, &it); err != nil {
-        return fmt.Errorf("error saving item in MapRepo: %w", err)
-    }
-    return nil
-}
+```go
+package main
 
-// ListItems lista todos os itens de ambos os repositórios e os combina
-func (u *ItemUsecase) ListItems(ctx context.Context) (item.MapRepo, error) {
-    mongoItems, err := u.mongoRepo.ListItems(ctx)
+import (
+    "log"
+
+    "github.com/gin-gonic/gin"
+
+    handler "api/cmd/rest/handlers"
+    core "api/internal/core"
+    item "api/internal/core/item"
+    mongodbsetup "api/internal/platform/mongodb"
+    mysqlsetup "api/internal/platform/mysql"
+)
+
+func main() {
+    // Configurar MySQL
+    mysqlClient, err := mysqlsetup.NewMySQLSetup()
     if err != nil {
-        return nil, fmt.Errorf("error listing items from MongoDB: %w", err)
+        log.Fatalf("não foi possível configurar MySQL: %v", err)
     }
+    defer mysqlClient.Close()
 
-    mapItems, err := u.mapRepo.ListItems(ctx)
+    // Configurar MongoDB
+    mongoDBClient, err := mongodbsetup.NewMongoDBSetup()
     if err != nil {
-        return nil, fmt.Errorf("error listing items from MapRepo: %w", err)
+        log.Fatalf("não foi possível configurar MongoDB: %v", err)
     }
+    defer mongoDBClient.Close()
 
-    // Combina os resultados de ambos os repositórios
-    for k, v := range mapItems {
-        mongoItems[k] = v
+    // Inicializar repositórios
+    mysqlRepo := item.NewMySqlRepository(mysqlClient.DB())
+    mongoDBRepo := item.NewMongoRepository(mongoDBClient.DB())
+
+    // Inicializar caso de uso com ambos repositórios
+    usecase := core.NewItemUsecase(mysqlRepo, mongoDBRepo)
+
+    // Inicializar handlers
+    handler := handler.NewHandler(usecase)
+
+    // Configurar roteador
+    router := gin.Default()
+    router.POST("/items", handler.SaveItem)
+    router.GET("/items", handler.ListItems)
+
+    // Iniciar servidor
+    log.Println("Servidor iniciado em http://localhost:8080")
+    if err := router.Run(":8080"); err != nil {
+        log.Fatal(err)
     }
-
-    return mongoItems, nil
 }
 ```
 
 ### Handlers HTTP
-
-O código a seguir define manipuladores HTTP (`handler`) que utilizam o caso de uso (`ItemUsecase`) para processar solicitações relacionadas aos itens. Eles são utilizados para salvar novos itens e listar todos os itens.
 
 ```go
 package handler
@@ -353,7 +369,7 @@ import (
 
 // handler é o manipulador para as solicitações HTTP relacionadas aos itens
 type handler struct {
-    core core.ItemUsecasePort // Caso de uso de itens
+    core core.ItemUsecasePort // Caso de uso dos itens
 }
 
 // NewHandler cria uma nova instância de handler
@@ -416,7 +432,3 @@ Para testar o código e verificar se funciona corretamente, você pode utilizar 
   "updated_at": "2024-07-17T10:53:22.123456789Z"
 }
 ```
-
----
-
-Essa documentação fornece uma visão completa de como configurar e utilizar um cliente MongoDB em Go, incluindo a configuração, criação do cliente, injeção de dependências, repositórios, casos de uso, manipuladores HTTP e exemplos de uso com JSON.
