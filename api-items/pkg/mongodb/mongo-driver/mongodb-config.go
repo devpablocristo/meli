@@ -12,9 +12,16 @@ type MongoDBClientConfig struct {
 }
 
 // dsn gera o Data Source Name (DSN) a partir da configuração fornecida
+
 func (config MongoDBClientConfig) dsn() string {
-	return fmt.Sprintf("mongodb://%s:%s@%s:%s/%s",
+
+	dns := fmt.Sprintf("mongodb://%s:%s@%s:%s/%s?authMechanism=SCRAM-SHA-256",
 		config.User, config.Password, config.Host, config.Port, config.Database)
 
-	//return "mongodb://root:rootpassword@mongodb:27017"
+	fmt.Println(dns)
+
+	return fmt.Sprintf("mongodb://%s:%s@%s:%s/%s?authMechanism=SCRAM-SHA-256",
+		config.User, config.Password, config.Host, config.Port, config.Database)
+
+	//return "mongodb://root:root@mongodb:27017"
 }

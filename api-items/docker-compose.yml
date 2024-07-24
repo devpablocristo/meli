@@ -19,6 +19,9 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=inventory
       - MYSQL_PASSWORD=api_password
+    restart: unless-stopped
+    networks:
+      - app-network
 
   mysql:
     image: mysql:8.0
@@ -31,6 +34,9 @@ services:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - app-network
 
   phpmyadmin:
     image: phpmyadmin:5.2.1-apache
@@ -41,6 +47,9 @@ services:
       - "8081:80"
     depends_on:
       - mysql
+    restart: unless-stopped
+    networks:
+      - app-network
 
   mongodb:
     image: mongo:5.0.28
@@ -52,6 +61,9 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
+    restart: unless-stopped
+    networks:
+      - app-network
 
   mongo-express:
     image: mongo-express:1.0.2-20-alpine3.19
@@ -64,6 +76,9 @@ services:
       - "8082:8081"
     depends_on:
       - mongodb
+    restart: unless-stopped
+    networks:
+      - app-network
 
 networks:
   app-network:

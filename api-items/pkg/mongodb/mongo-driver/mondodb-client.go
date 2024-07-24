@@ -25,7 +25,7 @@ func NewMongoDBClient(config MongoDBClientConfig) (*MongoDBClient, error) {
 	return client, nil
 }
 
-// connect estabelece a conexão com o banco de dados MongoDB utilizando a configuração fornecida
+// connect establece la conexión con la base de datos MongoDB utilizando la configuración proporcionada
 func (client *MongoDBClient) connect() error {
 	dsn := client.config.dsn()
 	clientOptions := options.Client().ApplyURI(dsn)
@@ -35,7 +35,7 @@ func (client *MongoDBClient) connect() error {
 		return fmt.Errorf("failed to connect to MongoDB: %w", err)
 	}
 
-	// Verificar a conexão
+	// Verificar la conexión
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -48,14 +48,14 @@ func (client *MongoDBClient) connect() error {
 	return nil
 }
 
-// Close fecha a conexão com o banco de dados MongoDB
+// Close cierra la conexión con la base de datos MongoDB
 func (client *MongoDBClient) Close() {
 	if client.db != nil {
 		client.db.Client().Disconnect(context.TODO())
 	}
 }
 
-// DB retorna a conexão com o banco de dados MongoDB
+// DB retorna la conexión con la base de datos MongoDB
 func (client *MongoDBClient) DB() *mongo.Database {
 	return client.db
 }

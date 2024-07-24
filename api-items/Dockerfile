@@ -11,17 +11,14 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copiamos o restante dos arquivos fonte e o script wait-for-it.sh
+# Copiamos o restante dos arquivos fonte
 COPY . .
-COPY wait-for-it.sh /wait-for-it.sh
 
-# Tornamos o script executável e construímos a aplicação
-RUN chmod +x /wait-for-it.sh && \
-    go build -o /app/bin/myapp ./cmd/rest/main.go
+# Construímos a aplicação
+RUN go build -o /app/bin/myapp ./cmd/rest/main.go
 
 # Exponhamos a porta 8080 para a aplicação
 EXPOSE 8080
 
 # Comando para executar a aplicação
-# Usamos wait-for-it.sh para garantir que o MySQL esteja disponível antes de iniciar a aplicação
-CMD ["/wait-for-it.sh", "mysql:3306", "--", "/app/bin/myapp"]
+CMD ["/app/bin/myapp"]

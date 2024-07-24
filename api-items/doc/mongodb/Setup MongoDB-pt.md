@@ -69,8 +69,8 @@ import (
 // NewMongoDBSetup configura e retorna um novo cliente MongoDB
 func NewMongoDBSetup() (*mongodriver.MongoDBClient, error) {
     config := mongodriver.MongoDBClientConfig{
-        User:     "api_user",
-        Password: "api_password",
+        User:     "root",
+        Password: "rootpassword",
         Host:     "mongodb",
         Port:     "27017",
         Database: "inventory",
