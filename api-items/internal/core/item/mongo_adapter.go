@@ -8,20 +8,20 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// MongoDBRepository es una implementación del repositorio de elementos utilizando MongoDB
-type MongoDBRepository struct {
+// mongoDBRepository es una implementación del repositorio de elementos utilizando MongoDB
+type mongoDBRepository struct {
 	db *mongo.Database // Conexión a la base de datos MongoDB
 }
 
-// NewMongoDBRepository crea una nueva instancia de MongoDBRepository
+// NewMongoDBRepository crea una nueva instancia de mongoDBRepository
 func NewMongoDBRepository(db *mongo.Database) ItemRepositoryPort {
-	return &MongoDBRepository{
+	return &mongoDBRepository{
 		db: db,
 	}
 }
 
 // SaveItem guarda un nuevo elemento en la base de datos MongoDB
-func (r *MongoDBRepository) SaveItem(it *Item) error {
+func (r *mongoDBRepository) SaveItem(it *Item) error {
 	it.CreatedAt = time.Now()
 	it.UpdatedAt = time.Now()
 	_, err := r.db.Collection("items").InsertOne(context.TODO(), it)
@@ -29,7 +29,7 @@ func (r *MongoDBRepository) SaveItem(it *Item) error {
 }
 
 // ListItems lista todos los elementos de la base de datos MongoDB
-func (r *MongoDBRepository) ListItems() (MapRepo, error) {
+func (r *mongoDBRepository) ListItems() (MapRepo, error) {
 	cursor, err := r.db.Collection("items").Find(context.TODO(), bson.D{})
 	if err != nil {
 		return nil, err
