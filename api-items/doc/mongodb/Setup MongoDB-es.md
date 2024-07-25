@@ -225,7 +225,7 @@ type mongoRepository struct {
 }
 
 // NewMongoRepository crea una nueva instancia de mongoRepository
-func NewMongoRepository(db *mongo.Database) ItemRepositoryPort {
+func NewMongoRepository(db *mongo.Database) RepositoryPort {
     return &mongoRepository{
         db: db,
     }

@@ -10,7 +10,7 @@
 - `func NewMySQLSetup() (*gosqldriver.MySQLClient, error)`:
     - Usa `type MySQLClientConfig struct` para crear la configuración.
     - Usa `func NewMySQLClient(config MySQLClientConfig) (*MySQLClient, error)` para crear la instancia de MySQL.
-- Esta instancia se inyecta en el repositorio con `func NewMySqlRepository(db *sql.DB) ItemRepositoryPort`.
+- Esta instancia se inyecta en el repositorio con `func NewMySqlRepository(db *sql.DB) RepositoryPort`.
 
 ---
 
@@ -186,7 +186,7 @@ type mysqlRepository struct {
 }
 
 // NewMySqlRepository crea una nueva instancia de mysqlRepository
-func NewMySqlRepository(db *sql.DB) ItemRepositoryPort {
+func NewMySqlRepository(db *sql.DB) RepositoryPort {
     return &mysqlRepository{
         db: db,
     }
@@ -239,7 +239,7 @@ func (r *mysqlRepository) ListItems() (MapRepo, error) {
 
 3. **Función `NewMySqlRepository`**:
    - Crea una nueva instancia de `mysqlRepository` con la conexión a la base de datos proporcionada.
-   - Devuelve una implementación de `ItemRepositoryPort`.
+   - Devuelve una implementación de `RepositoryPort`.
 
 4. **Función `SaveItem`**:
    - Guarda un nuevo elemento en la base de datos MySQL.
@@ -269,12 +269,12 @@ import (
 
 // ItemUsecase representa el caso de uso para los elementos
 type ItemUsecase struct {
-    mysqlRepo item.ItemRepositoryPort // Repositorio de MySQL
-    mapRepo   item.ItemRepositoryPort // Repositorio de Map
+    mysqlRepo item.RepositoryPort // Repositorio de MySQL
+    mapRepo   item.RepositoryPort // Repositorio de Map
 }
 
 // NewItemUsecase crea una nueva instancia de ItemUsecase
-func NewItemUsecase(mysqlRepo, mapRepo item.ItemRepositoryPort) ItemUsecasePort {
+func NewItemUsecase(mysqlRepo, mapRepo item.RepositoryPort) ItemUsecasePort {
     return &ItemUsecase{
         mysqlRepo: mysqlRepo,
         mapRepo:   mapRepo,

@@ -4,20 +4,20 @@ import (
 	"fmt"
 )
 
-// Repository é uma implementação em memória do repositório de itens
-type Repository struct {
+// inMemoryRepository é uma implementação em memória do repositório de itens
+type inMemoryRepository struct {
 	items MapRepo // Mapa de itens
 }
 
-// NewRepository cria uma nova instância de Repository
-func NewRepository() ItemRepositoryPort {
-	return &Repository{
+// NewRepository cria uma nova instância de inMemoryRepository
+func NewInMemoryRepository() RepositoryPort {
+	return &inMemoryRepository{
 		items: make(MapRepo),
 	}
 }
 
 // SaveItem salva um novo item no repositório
-func (r *Repository) SaveItem(it *Item) error {
+func (r *inMemoryRepository) SaveItem(it *Item) error {
 	if it.ID == 0 {
 		return fmt.Errorf("item ID cannot be 0")
 	}
@@ -29,6 +29,6 @@ func (r *Repository) SaveItem(it *Item) error {
 }
 
 // ListItems lista todos os itens no repositório
-func (r *Repository) ListItems() (MapRepo, error) {
+func (r *inMemoryRepository) ListItems() (MapRepo, error) {
 	return r.items, nil
 }

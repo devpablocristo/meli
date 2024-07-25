@@ -7,22 +7,22 @@ import (
 	"api/internal/core/item"
 )
 
-// ItemUsecase representa o caso de uso para os itens
-type ItemUsecase struct {
-	mysqlRepo item.ItemRepositoryPort // Repositório de MySQL
-	mapRepo   item.ItemRepositoryPort // Repositório de Map
+// itemUseCase representa o caso de uso para os itens
+type itemUseCase struct {
+	mysqlRepo item.RepositoryPort // Repositório de MySQL
+	mapRepo   item.RepositoryPort // Repositório de Map
 }
 
-// NewItemUsecase cria uma nova instância de ItemUsecase
-func NewItemUsecase(mysqlRepo, mapRepo item.ItemRepositoryPort) ItemUsecasePort {
-	return &ItemUsecase{
+// NewItemUsecase cria uma nova instância de itemUseCase
+func NewItemUsecase(mysqlRepo, mapRepo item.RepositoryPort) ItemUsecasePort {
+	return &itemUseCase{
 		mysqlRepo: mysqlRepo,
 		mapRepo:   mapRepo,
 	}
 }
 
 // SaveItem salva um novo item em ambos os repositórios
-func (u *ItemUsecase) SaveItem(it item.Item) error {
+func (u *itemUseCase) SaveItem(it item.Item) error {
 	now := time.Now()
 	it.CreatedAt = now
 	it.UpdatedAt = now
@@ -37,7 +37,7 @@ func (u *ItemUsecase) SaveItem(it item.Item) error {
 }
 
 // ListItems lista todos os itens de ambos os repositórios e os combina
-func (u *ItemUsecase) ListItems() (item.MapRepo, error) {
+func (u *itemUseCase) ListItems() (item.MapRepo, error) {
 	mysqlItems, err := u.mysqlRepo.ListItems()
 	if err != nil {
 		return nil, fmt.Errorf("error listing items from MySQL: %w", err)

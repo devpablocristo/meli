@@ -27,12 +27,14 @@ func main() {
 	defer mongoDBClient.Close()
 
 	// Inicializar repositórios
-	//mapRepo := item.NewRepository()
+	inMemoryRepo := item.NewInMemoryRepository()
 	mysqlRepo := item.NewMySqlRepository(mysqlClient.DB())
-	mongoDBRepo := item.NewMongoDBRepository(mongoDBClient.DB())
+	mongoDbRepo := item.NewMongoDbRepository(mongoDBClient.DB())
+
+	_ = inMemoryRepo
 
 	// Inicializar caso de uso com ambos repositórios
-	usecase := core.NewItemUsecase(mysqlRepo, mongoDBRepo)
+	usecase := core.NewItemUsecase(mysqlRepo, mongoDbRepo)
 
 	// Inicializar handlers
 	handler := handler.NewHandler(usecase)

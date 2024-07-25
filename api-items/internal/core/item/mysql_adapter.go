@@ -11,7 +11,7 @@ type mysqlRepository struct {
 }
 
 // NewMySqlRepository cria uma nova instância de mysqlRepository
-func NewMySqlRepository(db *sql.DB) ItemRepositoryPort {
+func NewMySqlRepository(db *sql.DB) RepositoryPort {
 	return &mysqlRepository{
 		db: db,
 	}
