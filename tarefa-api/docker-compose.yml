@@ -1,0 +1,63 @@
+version: "3.7"
+
+services:
+  mysql-local:
+    container_name: mysql-local
+    image: "mysql:8.2.0-oracle"
+    command: >
+      --default-authentication-plugin=caching_sha2_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+    restart: unless-stopped
+    networks:
+      - default
+    ports:
+      - "${MYSQL_HOST_PORT:-3307}:${MYSQL_CONT_PORT:-3306}"
+    expose:
+      - "${MYSQL_HOST_PORT:-3307}"
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-root}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE:-tarefaapi}"
+      MYSQL_USER: "${MYSQL_USERNAME:-user}"
+      MYSQL_PASSWORD: "${MYSQL_USER_PASSWORD:-12345}"
+      MYSQL_ROOT_HOST: "%"  
+    #volumes:
+      #- "./.docker-volumes/mysql:/var/lib/mysql" #por coherencia con dynamodb, uso el directorio definido
+      #- "mysql_data:/var/lib/mysql"
+      #- "./platform/database/*.sql:/docker-entrypoint-initdb.d/" #all scripts in docker-entrypoint-initdb.d/ are automatically executed during container startup
+  api:
+    container_name: api-local
+    build:
+      context: "."
+      dockerfile: Dockerfile
+    ports:
+      - 9999:8080  
+    expose:
+      - 9999 # Puerto para Postman
+    networks:
+      - default  
+    depends_on:
+      - mysql-local
+    links:
+      - mysql-local
+    volumes:
+      - "./:/app"
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.1-apache
+    container_name: phpmyadmin-local
+    networks:
+      - default    
+    links:
+      - mysql-local
+    restart: always
+    environment:
+      - PMA_HOST="${MYSQL_CONT:-mysql-local}" #nombre del server "mysql-local" en este caso
+      - PMA_PORT="${MYSQL_HOST_PORT:-3307}"
+      - PMA_ARBITRARY=1
+      - MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-root}"
+    ports:
+      - "${PHPMYADMIN_HOST_PORT:-9090}:${PHPMYADMIN_CONT_PORT:-80}"
+
+networks:
+  default:

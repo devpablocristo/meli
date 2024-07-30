@@ -1,0 +1,259 @@
+package usecase_test
+
+import (
+	"errors"
+	"fmt"
+	"testing"
+
+	"github.com/devpablocristo/tarefaapi/internal/entity"
+	"github.com/devpablocristo/tarefaapi/internal/usecase"
+	"github.com/devpablocristo/tarefaapi/mocks"
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestTaskUsecase_CreateTask(t *testing.T) {
+	// Create mockgen controller
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// Create mock repository
+	repositoryMock := mocks.NewMockTaskUsecasePort(ctrl)
+	// Instantiate usecase
+	uc := usecase.NewTaskUsecase(repositoryMock)
+
+	// Method parameters
+	type args struct {
+		task *entity.Task
+	}
+
+	// Default Task object to be passed as args.task
+	task := &entity.Task{
+		Title:       "Title",
+		Description: "Description",
+		User: entity.User{
+			Name: "Name",
+			Team: "Team",
+		},
+		Status: "TODO",
+	}
+
+	// Test parameters such as name, args, test function caller, errors and times ran
+	tests := []struct {
+		name        string
+		args        args
+		prepare     func()
+		repoError   error
+		wantedError error
+		repoTimes   int
+	}{
+		// Test Cases
+		{
+			name: "Happy Path",
+			args: args{
+				task: task,
+			},
+			prepare: func() {
+				repositoryMock.EXPECT().CreateTask(task).Return(nil)
+			},
+			repoError:   nil,
+			wantedError: nil,
+			repoTimes:   1,
+		},
+		{
+			name: "Create Error",
+			args: args{
+				task: task,
+			},
+			prepare: func() {
+				repositoryMock.EXPECT().CreateTask(task).Return(errors.New("repo error"))
+			},
+			repoError:   errors.New("repo error"),
+			wantedError: fmt.Errorf("error saving Repo task: %w", errors.New("repo error")),
+			repoTimes:   1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			tt.prepare()
+			err := uc.CreateTask(tt.args.task)
+			if tt.wantedError != nil {
+				assert.NotNil(t, err, "error cannot be nil")
+				assert.Equal(t, tt.wantedError, err, "unexpected error received")
+				return
+			}
+			assert.Nil(t, err)
+		})
+	}
+}
+
+func TestTaskUsecase_UpdateTask(t *testing.T) {
+	// Create mockgen controller
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// Create mock repository
+	repositoryMock := mocks.NewMockTaskUsecasePort(ctrl)
+	// Instantiate usecase
+	uc := usecase.NewTaskUsecase(repositoryMock)
+
+	// Method parameters
+	type args struct {
+		task *entity.Task
+	}
+
+	// Default Task object to be passed as args.task
+	task := &entity.Task{
+		ID:          "12345",
+		Title:       "Title",
+		Description: "Description",
+		User: entity.User{
+			Name: "Name",
+			Team: "Team",
+		},
+		Status: "DONE",
+	}
+
+	// Test parameters such as name, args, test function caller, errors and times ran
+	tests := []struct {
+		name        string
+		args        args
+		prepare     func()
+		repoError   error
+		wantedError error
+		repoTimes   int
+	}{
+		// Test Cases
+		{
+			name: "Happy Path",
+			args: args{
+				task: task,
+			},
+			prepare: func() {
+				repositoryMock.EXPECT().UpdateTask(task).Return(nil)
+			},
+			repoError:   nil,
+			wantedError: nil,
+			repoTimes:   1,
+		},
+		{
+			name: "Update Error",
+			args: args{
+				task: task,
+			},
+			prepare: func() {
+				repositoryMock.EXPECT().UpdateTask(task).Return(errors.New("repo error"))
+			},
+			repoError:   errors.New("repo error"),
+			wantedError: fmt.Errorf("error updating task REPO: %w", errors.New("repo error")),
+			repoTimes:   1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			tt.prepare()
+			err := uc.UpdateTask(tt.args.task)
+			if tt.wantedError != nil {
+				assert.NotNil(t, err, "error cannot be nil")
+				assert.Equal(t, tt.wantedError, err, "unexpected error received")
+				return
+			}
+			assert.Nil(t, err)
+		})
+	}
+}
+
+func TestTaskUsecase_GetAllTask(t *testing.T) {
+	// Create mockgen controller
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	// Create mock repository
+	repositoryMock := mocks.NewMockTaskUsecasePort(ctrl)
+	// Instantiate usecase
+	uc := usecase.NewTaskUsecase(repositoryMock)
+
+	// Method parameters
+	type args struct {
+		task *entity.Task
+	}
+
+	// Default Task object to be passed as args.task
+	task := &entity.Task{
+		Status: "TODO",
+	}
+
+	wantedRet := []entity.Task{
+		{
+			ID:          "12345",
+			Title:       "Title",
+			Description: "Description",
+			User: entity.User{
+				Name: "Name",
+				Team: "Team",
+			},
+			Status: "DONE",
+		},
+	}
+
+	// Test parameters such as name, args, test function caller, errors and times ran
+	tests := []struct {
+		name        string
+		args        args
+		prepare     func()
+		repoRet     []entity.Task
+		wantedRet   []entity.Task
+		repoError   error
+		wantedError error
+		repoTimes   int
+	}{
+		// Test Cases
+		{
+			name: "Happy Path",
+			args: args{
+				task: task,
+			},
+			prepare: func() {
+				repositoryMock.EXPECT().GetAllTask(task).Return(wantedRet, nil)
+			},
+			repoRet:     wantedRet,
+			wantedRet:   wantedRet,
+			repoError:   nil,
+			wantedError: nil,
+			repoTimes:   1,
+		},
+		{
+			name: "GetAll Error",
+			args: args{
+				task: task,
+			},
+			prepare: func() {
+				repositoryMock.EXPECT().GetAllTask(task).Return(nil, errors.New("repo error"))
+			},
+			repoRet:     nil,
+			wantedRet:   nil,
+			repoError:   errors.New("repo error"),
+			wantedError: fmt.Errorf("error getting task from Repo: %w", errors.New("repo error")),
+			repoTimes:   1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			tt.prepare()
+			ret, err := uc.GetAllTask(tt.args.task)
+			if tt.wantedError != nil {
+				assert.NotNil(t, err, "error cannot be nil")
+				assert.Equal(t, tt.wantedError, err, "unexpected error received")
+				return
+			}
+			if tt.wantedRet != nil {
+				assert.Equal(t, tt.wantedRet, ret)
+				return
+			}
+			assert.Nil(t, err)
+		})
+	}
+}

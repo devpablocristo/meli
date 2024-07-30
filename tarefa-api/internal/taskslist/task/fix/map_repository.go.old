@@ -1,0 +1,57 @@
+package task
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/devpablocristo/tarefaapi/internal/entity"
+	"github.com/google/uuid"
+)
+
+// In memory repository using map for task storage
+type MapRepo struct {
+	task mRepo
+}
+
+type mRepo = map[string]entity.Task
+
+// Constructor of Repository, creates map with make and returns Repository struct as a pointer
+func NewMapRepo() entity.TaskRepositoryPort {
+	return &MapRepo{
+		task: make(mRepo),
+	}
+}
+
+func (r *MapRepo) CreateTask(t *entity.Task) error {
+	//check for mandatory values
+	if strings.TrimSpace(t.Title) == "" ||
+		strings.TrimSpace(t.User.Name) == "" ||
+		strings.TrimSpace(t.User.Team) == "" {
+		return fmt.Errorf("title, name and team are mandatory fields")
+	}
+	newID := uuid.New().String()
+	t.ID = newID
+	t.Status = "TODO"
+
+	r.task[newID] = *t
+	return nil
+}
+
+func (r *MapRepo) UpdateTask(ID string, t *entity.Task) error {
+	t.ID = ID
+	r.task[ID] = *t
+	return nil
+}
+
+func (r *MapRepo) GetAllTask(status string) ([]entity.Task, error) {
+	var task []entity.Task
+
+	// checking in the map for task with the given status
+	for _, task := range r.task {
+		if task.Status == status {
+			task = append(task, task)
+		}
+	}
+
+	return task, nil
+}

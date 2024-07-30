@@ -1,0 +1,14 @@
+CREATE DATABASE IF NOT EXISTS tarefaapi;
+USE tarefaapi;
+
+CREATE TABLE IF NOT EXISTS task (
+    ID VARCHAR(36) PRIMARY KEY,
+    Title VARCHAR(255) NOT NULL,
+    Description TEXT,
+    UserName VARCHAR(255),
+    UserTeam VARCHAR(255),
+    Status VARCHAR(50),
+    CreatedAt DATETIME NOT NULL,
+    UpdatedAt DATETIME NOT NULL,
+    Deleted BOOLEAN NOT NULL DEFAULT FALSE
+) ENGINE = InnoDB DEFAULT COLLATE = utf8mb4_general_ci DEFAULT CHARSET = utf8mb4;

@@ -1,0 +1,58 @@
+package mysql 
+
+import (
+	"github.com/jmoiron/sqlx"
+)
+
+type TaskDao struct {
+	db *sqlx.DB
+}
+
+func NewTaskDao(db *sqlx.DB) *TaskDao {
+	return &TaskDao{
+		db: db,
+	}
+}
+
+func (dao *TaskDao) Create(data map[string]interface{}) error {
+	// Debes construir dinámicamente tu consulta SQL basada en los datos proporcionados
+	// Esto es solo un ejemplo y deberías ajustar los nombres de las columnas y los valores según tu esquema específico
+	fields := ""
+	placeholders := ""
+	var args []interface{}
+	for field, value := range data {
+		fields += field + ","
+		placeholders += "?,"
+		args = append(args, value)
+	}
+	fields = fields[:len(fields)-1] // Remover la última coma
+	placeholders = placeholders[:len(placeholders)-1]
+
+	query := `INSERT INTO task (` + fields + `) VALUES (` + placeholders + `)`
+	_, err := dao.db.Exec(query, args...)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Para GetAll, puedes decidir retornar un slice de mapas para mantener la agnosticidad
+func (dao *TaskDao) GetAll() ([]map[string]interface{}, error) {
+	// Esta implementación específica dependerá de cómo desees manejar los resultados
+	return nil, nil
+}
+
+// Similar a Create, Update usaría un mapa para datos genéricos
+func (dao *TaskDao) Update(ID string, data map[string]interface{}) error {
+	// Construye y ejecuta la consulta SQL dinámicamente como en Create
+	return nil
+}
+
+func (dao *TaskDao) Delete(ID string) error {
+	query := `UPDATE task SET deleted = TRUE WHERE id = ?`
+	_, err := dao.db.Exec(query, ID)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -1,0 +1,42 @@
+package mongodb
+
+import (
+	"context"
+	"fmt"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"github.com/devpablocristo/tarefaapi/internal/adapters/repository"
+	"github.com/devpablocristo/tarefaapi/internal/env"
+)
+
+// Environment variables for database configuration
+var (
+	DBHost = env.GetEnv("MONGO_HOSTNAME", "127.0.0.1")
+	DBPort = env.GetEnv("MONGO_USERNAME", "root")
+	DBName = env.GetEnv("MONGO_PASSWORD", "root")
+	DBUser = env.GetEnv("MONGO_DATABASE", "tarefaapi")
+	DBPass = env.GetEnv("MONGO_COLLECTION", "task")
+)
+
+// NewMongoDBConnection creates a new MongoDB connection.
+func NewMongoDBConnection() (*repository.MongoDBConnection, error) {
+	connectionString := fmt.Sprintf(
+		"mongodb+srv://%s:%s@%s/?retryWrites=true&w=majority",
+		DBUser,
+		DBPass,
+		DBHost,
+	)
+
+	// Create client options using the connection string
+	clientOptions := options.Client().ApplyURI(connectionString)
+
+	// Connect to MongoDB
+	client, err := mongo.Connect(context.Background(), clientOptions)
+	if err != nil {
+		return nil, err
+	}
+
+	return &repository.MongoDBConnection{Client: client}, nil
+}

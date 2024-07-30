@@ -1,0 +1,133 @@
+package task
+
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/google/uuid"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+
+	"github.com/devpablocristo/tarefaapi/internal/entity"
+	"github.com/devpablocristo/tarefaapi/internal/env"
+)
+
+// MongoRepo represents the MongoDB adapter for the repository.
+type MongoRepo struct {
+	Connection *MongoDBConnection
+	Database   string
+	Collection string
+}
+
+// MongoDBConnection represents the MongoDB connection.
+type MongoDBConnection struct {
+	Client *mongo.Client
+}
+
+// NewMongoRepo creates an instance of the MongoDB adapter.
+func NewMongoRepo(connection *MongoDBConnection) *MongoRepo {
+	return &MongoRepo{
+		Connection: connection,                                // Provide the MongoDB connection
+		Database:   env.GetEnv("MONGO_DATABASE", "tarefaapi"), // Specify the database name
+		Collection: env.GetEnv("MONGO_COLLECTION", "task"),    // Specify the collection name
+	}
+}
+
+// CreateTask inserts a new task into the collection.
+func (r *MongoRepo) CreateTask(t *entity.Task) error {
+	taskDAO := domain2dao(t)
+	// Get a reference to the collection in the specified database
+	collection := r.Connection.Client.Database(r.Database).Collection(r.Collection)
+	taskDAO.ID = uuid.New().String()
+	taskDAO.CreatedAt = time.Now()
+	taskDAO.UpdatedAt = time.Now()
+	taskDAO.Status = "TODO"
+
+	// Perform insertion into the collection
+	_, err := collection.InsertOne(context.TODO(), taskDAO)
+	if err != nil {
+		return err
+	}
+	*t = *dao2domain(taskDAO)
+
+	return nil
+}
+
+// UpdateTask updates an existing task based on its ID.
+func (r *MongoRepo) UpdateTask(t *entity.Task) error {
+	taskDAO := domain2dao(t)
+	// Get a reference to the collection in the specified database
+	collection := r.Connection.Client.Database(r.Database).Collection(r.Collection)
+
+	// Create a filter to search for the task by ID
+	filter := bson.M{"ID": taskDAO.ID}
+	update := bson.M{
+		"$set": bson.M{
+			"title":       taskDAO.Title,
+			"description": taskDAO.Description,
+			"name":        taskDAO.Name,
+			"team":        taskDAO.Team,
+			"status":      taskDAO.Status,
+			"updatedat":   time.Now(), // Update the updatedAt field
+		},
+	}
+	// Update the task in the collection
+	_, err := collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *MongoRepo) GetAllTask(t *entity.Task) ([]entity.Task, error) {
+	taskDAO := domain2dao(t)
+	collection := r.Connection.Client.Database(r.Database).Collection(r.Collection)
+
+	filter := bson.M{
+		"status":  taskDAO.Status,
+		"deleted": bson.M{"$ne": true},
+	}
+
+	cur, err := collection.Find(context.TODO(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cur.Close(context.TODO())
+
+	var task []entity.Task
+
+	for cur.Next(context.TODO()) {
+		err := cur.Decode(&taskDAO)
+		if err != nil {
+			return nil, err
+		}
+		task = append(task, *dao2domain(taskDAO))
+	}
+
+	return task, nil
+}
+
+func (r *MongoRepo) DeleteTask(t *entity.Task) error {
+	taskDAO := domain2dao(t)
+	// Get a reference to the collection in the specified database
+	collection := r.Connection.Client.Database(r.Database).Collection(r.Collection)
+
+	// Create a filter to search for the task by ID
+	filter := bson.M{"ID": taskDAO.ID}
+	update := bson.M{
+		"$set": bson.M{
+			"deleted": true,
+		},
+	}
+
+	// Update the task in the collection
+	n, err := collection.UpdateOne(context.TODO(), filter, update)
+	fmt.Println(n)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

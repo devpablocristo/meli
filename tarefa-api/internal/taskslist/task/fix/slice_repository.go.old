@@ -1,0 +1,65 @@
+// package task
+
+// import (
+// 	"errors"
+// 	"fmt"
+// 	"strings"
+
+// 	"github.com/devpablocristo/tarefaapi/internal/entity"
+// 	"github.com/google/uuid"
+// )
+
+// type SliceRepo struct {
+// 	task sRepo
+// }
+
+// type sRepo = []entity.Task
+
+// func NewSliceRepo() entity.TaskRepositoryPort {
+// 	return &SliceRepo{
+// 		task: sRepo{},
+// 	}
+// }
+
+// func (r *SliceRepo) CreateTask(t *entity.Task) error {
+// 	//check for mandatory values
+// 	if strings.TrimSpace(t.Title) == "" ||
+// 		strings.TrimSpace(t.User.Name) == "" ||
+// 		strings.TrimSpace(t.User.Team) == "" {
+// 		return fmt.Errorf("title, name and team are mandatory fields")
+// 	}
+// 	newID := uuid.New().String()
+// 	newTask := entity.Task{
+// 		ID:          newID,
+// 		Title:       t.Title,
+// 		Description: t.Description,
+// 		User:        t.User,
+// 		Status:      "TODO",
+// 	}
+// 	r.task = append(r.task, newTask)
+// 	return nil
+// }
+
+// func (r *SliceRepo) UpdateTask(ID string, t *entity.Task) error {
+// 	for i, task := range r.task {
+// 		if task.ID == ID {
+// 			t.ID = ID
+// 			r.task[i] = *t
+// 			return nil
+// 		}
+// 	}
+// 	return errors.New("task ID does not exist SLICE")
+// }
+
+// func (r *SliceRepo) GetAllTask(status string) ([]entity.Task, error) {
+// 	var task []entity.Task
+
+// 	// checking in the slice for task with the given status
+// 	for _, task := range r.task {
+// 		if task.Status == status {
+// 			task = append(task, task)
+// 		}
+// 	}
+
+// 	return task, nil
+// }
