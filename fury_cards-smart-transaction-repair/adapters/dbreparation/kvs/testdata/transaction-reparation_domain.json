@@ -1,0 +1,25 @@
+{
+    "AuthorizationID":"auth_1",    
+    "PaymentID":"pay_1",
+    "KycIdentificationID":"abc",
+    "UserID":123,
+    "TransactionRepairID":"smart_reverse_auth_1",
+    "SiteID":"MLM",
+    "Type":"reverse",
+    "CreatedAt":"2022-12-14T00:00:00Z",
+    "FaqID": "faq_beta01",
+    "Requester": {
+        "ClientApplication": "cards-admin-me",
+        "ClientScope": "beta"
+    },
+    "MonetaryTransaction": {
+        "Billing":{
+            "Amount":15000.00,
+            "Currency": "MXN"            
+        },
+        "Settlement":{
+            "Amount":15.00,
+            "Currency": "USD"            
+        }
+    }
+}

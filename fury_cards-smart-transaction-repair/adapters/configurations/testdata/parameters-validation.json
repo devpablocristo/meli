@@ -1,0 +1,128 @@
+{
+  "rules_site": {
+    "MLM": {
+      "max_amount_reparation": {
+        "max_amount": 200000,
+        "currency": "MXN",
+        "decimal_digits": 2,
+        "score":{
+          "min_score_value": 0.1,
+          "max_amount": 7000.00                    
+        },
+        "trx_age_range": [
+          {
+            "gte_days": 7,
+            "lte_days": 14,
+            "max_accumulated_amount": 75000,
+            "currency": "MXN",
+            "decimal_digits": 2,
+            "score":{
+              "min_score_value": 0.2,
+              "max_accumulated_amount": 8000.00
+            }
+          },
+          {
+            "gte_days": 15,
+            "max_accumulated_amount": 100000,
+            "currency": "MXN",
+            "decimal_digits": 2,
+            "score":{
+              "min_score_value": 0.3,
+              "max_accumulated_amount": 9000.00  
+            }
+          }
+        ]        
+      },
+      "qty_reparation_per_period_days": {
+        "qty": 2,
+        "period_days": 30,
+        "score":{
+          "min_score_value": 0.3,
+          "qty":3
+        },
+        "trx_age_range": [
+          {
+            "gte_days": 7,
+            "lte_days": 14,
+            "qty": 3,
+            "score":{
+              "min_score_value": 0.4,
+              "qty": 4
+            }
+          },
+          {
+            "gte_days": 15,
+            "qty": 4,
+            "score":{
+              "min_score_value": 0.5,
+              "qty": 5
+            }            
+          }
+        ]
+      },
+      "status_detail_allowed": {
+        "pending_capture": {}
+      },
+      "evaluation_user": {
+        "tags": [
+          "repair_allowed"
+        ]
+      },
+      "blockeduser": {},
+      "user_lifetime":{
+        "gte_days":90,
+        "score":{
+          "min_score_value": 0.35,
+          "gte_days": 30
+        }        
+      },
+      "score":{
+          "min_score_value": 0.999
+      }
+    },
+    "MLA": {
+      "max_amount_reparation": {
+        "max_amount": 1900,
+        "currency": "USD",
+        "decimal_digits": 2
+      },
+      "qty_reparation_per_period_days": {
+        "qty": 1,
+        "period_days": 90
+      },
+      "status_detail_allowed": {
+        "pending_capture": {}
+      },
+      "evaluation_user": {
+        "tags": [
+          "repair_allowed"
+        ]
+      },
+      "blockeduser": {},
+      "qty_chargeback_per_period_days": {
+        "qty": 0,
+        "period_days": 90
+      },
+      "merchant_blockedlist":[
+          "123Componentes", "MERCADOPAGO*", "MERCPAGO*", "LckSe"
+      ],
+      "subtype_allowed":{
+        "purchase": {}
+      },
+      "min_total_historical_amount":{
+        "min_amount": 10000,
+        "currency": "USD",
+        "decimal_digits": 2        
+      },     
+      "min_transactions_qty":{
+        "min_qty":10
+      }
+    },
+    "MLC":{
+      "qty_chargeback_per_period_days": {
+        "qty": 0,
+        "period_days": 90
+      }      
+    }
+  }  
+}

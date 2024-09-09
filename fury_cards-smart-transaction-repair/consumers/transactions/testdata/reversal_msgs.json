@@ -1,0 +1,36 @@
+{
+    "messages": [
+      {
+        "id": "01",
+        "msg": {
+          "authorization_id": "auth_01",
+          "id": "reverse_auth_01",
+          "type": "reversal"
+        }
+      },
+      {
+        "id": "02",
+        "msg": {
+          "authorization_id": "auth_02",
+          "id": "reverse_auth_02",
+          "type": "reversal"
+        }
+      },
+      {
+        "id": "03",
+        "msg": {
+          "authorization_id": "auth_03",
+          "id": "reverse_auth_03",
+          "type": "reversal"
+        }
+      },
+      {
+        "id": "04",
+        "msg": {
+          "authorization_id": "auth_04",
+          "id": "reverse_auth_04",
+          "type": "reversal"
+        }
+      }
+    ]
+  }

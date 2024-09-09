@@ -1,0 +1,52 @@
+[
+  {
+    "authorization_id": "auth_1",
+    "payment_id": "1",
+    "kyc_identification_id":"abc",
+    "user_id": 123,
+    "transaction_repair_id": "reverse_smart_auth_1",
+    "site_id": "MLM",
+    "created_at": "2022-11-10T00:00:00Z",
+    "type": "reverse",
+    "faq_id": "faq_beta01",
+    "requester": {
+      "client_application": "cards-admin-me",
+      "client_scope": "beta"
+    },
+    "monetary_transaction": {
+        "billing":{
+            "amount":15000.00,
+            "currency": "MXN"            
+        },
+        "settlement":{
+            "amount":15.00,
+            "currency": "USD"            
+        }
+    }
+  },
+  {
+    "authorization_id": "auth_2",
+    "payment_id": "2",
+    "kyc_identification_id":"abc",
+    "user_id": 123,
+    "transaction_repair_id": "reverse_smart_auth_2",
+    "site_id": "MLM",
+    "created_at": "2022-11-10T00:00:00Z",
+    "type": "reverse",
+    "faq_id": "faq_beta01",
+    "requester": {
+      "client_application": "cards-admin-me",
+      "client_scope": "beta"
+    },
+    "monetary_transaction": {
+        "billing":{
+            "amount":15000.00,
+            "currency": "MXN"            
+        },
+        "settlement":{
+            "amount":15.00,
+            "currency": "USD"            
+        }
+    }
+  }  
+]

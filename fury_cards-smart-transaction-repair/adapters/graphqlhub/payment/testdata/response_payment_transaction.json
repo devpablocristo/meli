@@ -1,0 +1,92 @@
+{
+  "payment": {
+    "id": 50844833020,
+    "site_id": "MLB",
+    "status_detail": "pending_capture",
+    "status": "authorized",
+    "debit_transaction": {
+      "id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",      
+      "acquirer_code": "489427",
+      "capture_datetime": null,
+      "capture_id": null,
+      "environment": "test",
+      "operation": {
+        "is_international": false,            
+        "account_type": "debit",
+        "authorization_indicator": "final",
+        "creation_datetime": "2022-10-25T14:45:47.560Z",
+        "transmission_datetime": "2022-10-25T12:47:35.190Z",
+        "expiration_date": "2023-10-25T14:45:47.560Z",
+        "installments": 1,
+        "acquirer_code": "489427",
+        "stan": 829121,
+        "transaction": {
+          "amount": 35000,
+          "additional_amounts": [],
+          "total_amount": 35000,
+          "reversed_amount": null,
+          "original_amount": null,
+          "increased_amount": null,
+          "decimal_digits": 2,
+          "currency": "BRL",
+          "captured_amount": null
+        },
+        "card": {
+          "country": "BR",
+          "number_id": "GKALLNGKUBIEYQXVYBHPIYDLDMAWOADJIJSEDZAW",
+          "issuer_account": {
+              "id": "PATTSDCRBIERYHIVMTGIGAHZTVFMIDVAVLYFXULJ",
+              "card": {
+                "business_mode": "debit-virtual"
+              }
+          },
+          "token_info": {
+              "token_wallet_id": "011x"
+          }         
+        },
+        "subtype": "purchase",
+        "is_advice": false,
+        "billing": {
+          "amount": 35000,                                          
+          "decimal_digits": 2,
+          "currency": "BRL",
+          "total_amount": 35000,
+          "conversion":{
+            "rate":1,
+            "decimal_digits":0,
+            "date":null,
+            "from":"transaction"
+          }
+        },
+        "settlement": {
+          "amount": 7000,
+          "currency": "USD",
+          "decimal_digits": 2,
+          "total_amount": 7000,
+          "conversion":{
+            "rate":1,
+            "decimal_digits":0,
+            "date":null,
+            "from":"transaction"
+          }       
+        }       
+      },
+      "reversal_ids": [],
+      "status": "approved",
+      "type": "authorization",
+      "card_acceptor": {
+        "terminal": "DA006032",
+        "name": "Tienda",
+        "entry_mode": "credential_on_file",
+        "type": "5968",
+        "terminal_mode": "unknown",
+        "pin_capability": "without_pin"
+      },
+      "provider": {
+        "id": "conductor"
+      }
+    },
+    "payer_id":1234567890123456789        
+  }
+}
+  

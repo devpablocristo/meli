@@ -1,0 +1,38 @@
+{
+    "messages": [
+      {
+        "id": "01",
+        "msg": {
+          "authorization_id": "forced_offline-capture_auth_mlb_test_adtorres_score-full-8-1669990748570",
+          "id": "capture_auth_mlb_test_adtorres_score-full-8",
+          "type": "capture"
+        }
+      },
+      {
+        "id": "02",
+        "msg": {
+          "authorization_id": "forced_offline-capture_auth_mlb_test_adtorres_score-full-8-1669990748570_2",
+          "id": "capture_auth_mlb_test_adtorres_score-full-8_2",
+          "type": "capture",
+          "original_authorization_id": "original_auth_02"
+        }
+      },
+      {
+        "id": "03",
+        "msg": {
+          "authorization_id": "auth_03",
+          "id": "capture_auth_03",
+          "type": "capture",
+          "original_authorization_id": ""
+        }
+      },
+      {
+        "id": "04",
+        "msg": {
+          "authorization_id": "auth_04",
+          "id": "capture_auth_04",
+          "type": "capture"
+        }
+      }
+    ]
+  }

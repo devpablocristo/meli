@@ -1,0 +1,23 @@
+{   
+    "id": "581fb1b8-feab-4899-857a-9b8ba6faddd2",
+    "payment_id": "50844833020",
+    "kyc_identification_id": "abc",
+    "user_id": 1117823961,
+    "is_eligible": true,
+    "created_at": "2022-12-01T00:00:00Z",
+    "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+    "type_reparation": "reverse",
+    "site_id": "MLM",    
+    "faq_id": "faq_01",
+    "client_application": "cards-admin-me",
+    "amount": 12.345,
+    "currency": "MXN",
+    "client_scope":"beta",
+    "score": 0.5,
+    "approved_data": {        
+        "score":{
+          "actual": 0.9,
+          "accepted": 0.9
+        }          
+      }
+}

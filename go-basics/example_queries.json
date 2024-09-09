@@ -1,0 +1,388 @@
+PUT /items
+{
+  "mappings": {
+    "properties": {
+      "code": {
+        "type": "text"
+      },
+      "title": {
+        "type": "text"
+      },
+      "description": {
+        "type": "text"
+      },
+      "stock": {
+        "type": "integer"
+      },
+      "price": {
+        "type": "float"
+      },
+      "available": {
+        "type": "boolean"
+      },
+      "categories": {
+        "type": "keyword"
+      },
+     "created_at": { 
+       "type": "date" 
+     },
+      "provider": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "keyword"
+          },
+          "name": {
+            "type": "text"
+          }
+        }
+      }
+    }
+  }
+}
+
+GET /items/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+POST /items/_delete_by_query
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+DELETE items
+
+# guardar item con ID nombre_indice/_doc/ID
+POST /items/_doc/1
+{
+  "code": "abcd123",
+  "title": "Laptop HP",
+  "description": "Portátil con pantalla de 15 pulgadas",
+  "stock": 5,
+  "price": 799.99,
+  "available": true,
+  "categories": ["Electrónica", "Informática"],
+  "created_at": "2023-09-10",
+  "provider": {
+    "code": "prov002",
+    "name": "PhoneDistributor LLC"
+  }
+}
+
+# guardo item sin especificar ID
+POST /items/_doc
+{
+  "code": "SAM234",
+  "title": "Teléfono Samsung Galaxy",
+  "description": "Smartphone Android de última generación",
+  "stock": 50,
+  "price": 599.99,
+  "available": false,
+  "categories": ["Electrónica", "Telefonía"],
+  "created_at": "2023-09-14",
+  "provider": {
+    "code": "prov001",
+    "name": "TechSupplier Inc."
+  }
+}
+
+POST /items/_doc
+{
+  "code": "SAM987",
+  "title": "Tablet Samsung A54",
+  "description": "Tablet Android de última generación",
+  "stock": 12,
+  "price": 699.99,
+  "available": true,
+  "categories": ["Electrónica"],
+  "created_at": "2023-09-15",
+  "provider": {
+    "code": "prov001",
+    "name": "TechSupplier Inc."
+  }
+}
+
+POST /items/_doc
+{
+  "code": "IPH234",
+  "title": "Celular Iphone 14 pro max",
+  "price": 1699.99,
+  "available": true,
+  "categories": ["Electrónica", "Telefonía"],
+  "created_at": "2023-09-21",
+  "provider": {
+    "code": "prov002",
+    "name": "PhoneDistributor LLC"
+  }
+}
+
+# Modificar item completo
+PUT /items/_doc/1
+{
+  "title": "Laptop Samsung",
+  "description": "Portátil con pantalla de 17 pulgadas",
+  "price": 699.99,
+  "available": true,
+  "provider": null
+}
+
+# Modificacion parcial de item
+POST /items/_update/1
+{
+  "doc": {
+    "price": 500.99
+  }
+}
+
+#Busquedas
+GET /items/_search
+{
+  "query": {
+    "term": {
+      "available": false
+    }
+  }
+}
+
+GET /items/_search
+{
+  "query": {
+    "term": {
+      "categories": "Telefonía"
+    }
+  }
+}
+
+GET /items/_search
+{
+  "query": {
+    "range": {
+      "price": {
+        "gte": 600,
+        "lte": 20000
+      }
+    }
+  }
+}
+
+# = in mysql
+GET /items/_search
+{
+  "query": {
+    "term": {
+      "provider.code": "prov002"
+    }
+  }
+}
+
+# SELECT * FROM items WHERE code = "IPH234"
+GET /items/_search
+{
+  "query": {
+    "term": {
+      "code": "IPH234"
+    }
+  }
+}
+
+# LIKE in mysql
+# match: Encuentra documentos que contengan cualquier combinación de los términos.
+# SELECT * FROM items WHERE provider.name LIKE "%TechSupplier%"
+GET /items/_search
+{
+  "query": {
+    "match": {
+      "provider.name": "TechSupplier"
+    }
+  }
+}
+
+#Busco documentos que tengan el campo description definido
+GET /items/_search
+{
+  "query": {
+    "exists": {
+      "field": "description"
+    }
+  }
+}
+
+# LIKE similar
+# match_phrase: Encuentra documentos que contengan la frase exacta en el orden especificado.
+GET /items/_search
+{
+  "query": {
+    "match_phrase": {
+      "title": "Tablet Samsung"
+    }
+  }
+}
+
+POST /items/_count
+{
+  "query": {
+    "match_phrase": {
+      "title": "Tablet Samsung"
+    }
+  }
+}
+
+#  busca documentos que contienen términos coincidentes con el término especificado. Por defecto, utiliza el operador OR
+GET /items/_search
+{
+  "query": {
+    "match": {
+      "description": "pantalla Oscar pulgadas Tablet"
+    }
+  }
+}
+
+# query_string es una consulta poderosa que permite construir consultas complejas utilizando una sintaxis similar a SQL
+GET /items/_search
+{
+  "query": {
+    "query_string": {
+      "query": "Laptop OR Samsung OR Android",
+      "fields": ["title", "description"]
+    }
+  }
+}
+
+# SELECT * FROM items WHERE (title LIKE '%Laptop%' OR description LIKE '%Laptop%') AND (title NOT LIKE '%Samsung%' AND description NOT LIKE '%Samsung%');
+GET /items/_search
+{
+  "query": {
+    "query_string": {
+      "query": "Laptop AND NOT Samsung",
+      "fields": ["title", "description"]
+    }
+  }
+}
+
+
+# bool: Es un tipo de consulta compuesta que permite combinar varias sub-consultas lógicas (must, should, must_not, filter)
+# Similar al operador AND de mysql, se tienen que cumplir ambas condiciones
+GET /items/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": { "description": "Android" } },
+        { "match": { "title": "Samsung A54" } }
+      ]
+    }
+  }
+}
+
+GET /items/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "term": { "available": false } }
+      ]
+    }
+  }
+}
+
+# Es similar al operador OR en SQL.
+GET /items/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        { "match": { "description": "Smartphone" } },
+        { "match": { "title": "Laptop" } }
+      ]
+    }
+  }
+}
+
+# similar a must pero no se calcula el puntaje
+GET /items/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "match": { "description": "Android" } },
+        { "match": { "title": "Samsung A54" } }
+      ]
+    }
+  }
+}
+
+GET /items/_search
+{
+  "query": {
+    "bool": {
+      "filter": [
+        { "term": { "available": false } },
+        { "range": { "price": { "gte": 300, "lte": 600 } } }
+      ]
+    }
+  }
+}
+  
+# En Elasticsearch, si deseas que las búsquedas encuentren palabras incluso si están mal escritas o si contiene errores tipográficos, puedes utilizar técnicas de corrección ortográfica y aproximación de texto
+GET /items/_search
+  {
+  "query": {
+    "fuzzy": {
+      "title": {
+        "value": "Suamsung",
+        "fuzziness": "AUTO"
+      }
+    }
+  }
+}
+
+#Sort
+GET /items/_search
+{
+  "size": 10,
+  "query": {
+    "match_all": {}
+  },
+  "sort": {"created_at": "desc"}
+}
+
+#Paginación
+GET /items/_search
+{
+  "from": 1,
+  "size": 10,
+  "query": {
+    "match_all": {}
+  },
+  "sort": {"created_at": "asc"}
+}
+
+POST /items/_search
+{
+  "size": 2,
+  "sort": {"created_at": "asc"}
+}
+
+POST /items/_search
+{
+  "size": 2,
+  "sort": {"created_at": "asc"},
+  "search_after": ["1694304000000"]
+}
+
+# Agregaciones
+POST /items/_search
+{
+  "aggs": {
+    "total_prices": {
+      "sum": {
+        "field": "price"
+      }
+    }
+  }
+}

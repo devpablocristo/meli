@@ -1,0 +1,63 @@
+{  
+    "infra": {      
+      "url_transactions_search": "http://internal.mercadopago.com/",       
+      "transactions_app": {
+        "beta_scope":"beta",
+        "base_url": "http://beta.transactional-cards.melisystems.com/",
+        "base_url_legacy": "http://internal.mercadopago.com/beta/",
+        "providers_with_legacy_url":{          
+          "globalprocessing": {},
+          "evertec": {}
+        }
+      },    
+      "kvs_reparation":{
+        "name":"REPARATION_HOM",         
+        "read_retries":2,
+        "write_retries": 1
+      },
+      "kvs_blockedlist":{
+        "name":"BLOCKEDLIST_HOM", 
+        "read_timeout_milliseconds": 250,        
+        "write_timeout_milliseconds": 250,
+        "read_retries":1,
+        "write_retries": 2
+      },
+      "ds_reparation":{
+        "name":"REPARATION_HOM-DS", 
+        "read_timeout_milliseconds": 2250,        
+        "retries":1
+      },  
+      "ds_blockeduser":{
+        "name":"BLOCKEDUSER_HOM-DS", 
+        "read_timeout_milliseconds": 2250,        
+        "retries":1
+      },       
+      "ds_validation":{
+        "name":"VALIDATION_HOM-DS",         
+        "write_timeout_milliseconds": 750,
+        "retries":1,
+        "retry_delay_milliseconds":1,
+        "retry_allowed_methods": ["POST"]
+      },
+      "graphql_kyc":{
+        "url":"http://internal.mercadolibre.com/v3/",
+        "x-pegasus-token":"cards-smart-transaction-repair",
+        "x-api-sandbox":true        
+      },
+      "topics":{
+        "validation_result":{
+          "name":"VALIDATION_RESULT_BETA",
+          "timeout_milliseconds": 3000,
+          "retries":1
+        }
+      },
+      "cards_data_models": {
+        "base_url": "https://beta-operational-cards.melioffice.com/",
+        "timeout_milliseconds": 3000
+      }
+    },
+    "options": {
+      "timeout_seconds_http": 3,
+      "timeout_hours_cache_default": 5
+    }
+}

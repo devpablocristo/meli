@@ -1,0 +1,50 @@
+[
+  {
+    "AuthorizationID": "auth_1",
+    "PaymentID": "1",
+    "KycIdentificationID":"abc",
+    "UserID": 123,
+    "TransactionRepairID": "reverse_smart_auth_1",
+    "SiteID": "MLM",
+    "CreatedAt": "2022-11-10T00:00:00Z",
+    "Type": "reverse",
+    "Requester": {
+      "ClientApplication": "cards-admin-me",
+      "ClientScope": "beta"
+    },
+    "MonetaryTransaction": {
+        "Billing":{
+            "Amount":15000.00,
+            "Currency": "MXN"            
+        },
+        "Settlement":{
+            "Amount":15.00,
+            "Currency": "USD"            
+        }
+    }
+  },
+  {
+    "AuthorizationID": "auth_2",
+    "PaymentID": "2",
+    "KycIdentificationID":"abc",
+    "UserID": 123,
+    "TransactionRepairID": "reverse_smart_auth_2",
+    "SiteID": "MLM",
+    "CreatedAt": "2022-11-10T00:00:00Z",
+    "Type": "reverse",
+    "Requester": {
+      "ClientApplication": "cards-admin-me",
+      "ClientScope": "beta"
+    },
+    "MonetaryTransaction": {
+        "Billing":{
+            "Amount":15000.00,
+            "Currency": "MXN"            
+        },
+        "Settlement":{
+            "Amount":15.00,
+            "Currency": "USD"            
+        }
+    }
+  }  
+]

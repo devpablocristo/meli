@@ -1,0 +1,11 @@
+{   
+    "result": {
+        "status": "approved",
+        "status_detail": null,
+        "processed_at": "2022-10-25T13:02:18.032Z",
+        "unblock_card": null,
+        "partial_approval": null,
+        "balance": null,
+        "operation": null
+    }
+}

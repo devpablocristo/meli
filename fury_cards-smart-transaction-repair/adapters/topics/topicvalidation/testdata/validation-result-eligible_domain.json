@@ -1,0 +1,26 @@
+{
+    "PaymentID": "50844833020",
+    "KycIdentificationID": "abc",
+    "UserID": 1117823961,
+    "IsEligible": true,
+    "DateCreated": "2022-12-01T00:00:00Z",
+    "AuthorizationID": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+    "Type": "reverse",
+    "SiteID": "MLM",
+    "FaqID": "faq_01",
+    "Score": 0.5,
+    "Requester": {
+      "ClientApplication": "cards-admin-me",
+      "ClientScope": "beta"
+    },
+    "TransactionEvaluated": {
+      "Amount":12.345,
+      "Currency": "MXN"      
+    },
+    "ApprovedData": {      
+      "score":{
+        "Actual": 0.9,
+        "Accepted": 0.9
+      }          
+    }
+  }

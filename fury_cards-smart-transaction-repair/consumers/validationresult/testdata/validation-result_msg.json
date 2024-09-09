@@ -1,0 +1,84 @@
+{
+  "msg": {  
+    "id": "581fb1b8-feab-4899-857a-9b8ba6faddd2",
+    "payment_id": "50844833020",
+    "kyc_identification_id": "abc",
+    "user_id": 1117823961,
+    "is_eligible": false,
+    "created_at": "2022-12-01T00:00:00Z",
+    "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+    "type_reparation": "reverse",
+    "site_id": "MLM",
+    "rule": "max_amount_reparation",
+    "faq_id": "faq_01",
+    "value_declined": "15000",
+    "allowed_value": "10000",
+    "client_application": "cards-admin-me",
+    "amount": 12.345,
+    "currency": "MXN",
+    "client_scope":"beta",
+    "score": 0.9,
+    "approved_data": {      
+      "score":{
+        "actual": 0.9,
+        "accepted": 0.9
+      }          
+    },
+    "reason": {
+      "blockeduser": {
+        "actual": true
+      },
+      "max_amount_reparation": {
+        "actual": 15000,
+        "accepted": 10000
+      },
+      "merchant_blockedlist": {
+        "actual": "123Componentes"      
+      },
+      "min_total_historical_amount": {
+        "actual": 10,
+        "accepted": 10000
+      },
+      "min_transactions_qty": {
+        "actual": 90,
+        "accepted": 100
+      },
+      "qty_chargeback_per_period": {
+        "actual": 11,
+        "accepted": {
+          "period_days": 111,
+          "qty": 0
+        }
+      },
+      "qty_reparation_per_period": {
+        "actual": 10,
+        "accepted": {
+          "period_days": 100,
+          "qty": 1
+        }
+      },      
+      "restrictions": {
+        "actual": [
+          "24bbd8493c4082b228801839dcb6e154"
+        ],
+        "accepted": null
+      },
+      "status_detail": {
+        "actual": "cancel_without_refund",
+        "accepted": [
+          "pending_capture"
+        ]
+      },
+      "subtype": {
+        "actual": "purchase extracash",
+        "accepted": [
+          "purchase"
+        ]
+      },
+      "user_lifetime": {
+        "actual": "2023-02-01T00:00:00Z",
+        "accepted": 10
+      }
+    }
+  }
+}

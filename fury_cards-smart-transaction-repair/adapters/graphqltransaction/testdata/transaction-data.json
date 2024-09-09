@@ -1,0 +1,64 @@
+{
+    "TransactionData": {
+      "Operation": {              
+        "CreationDatetime": "2022-10-25T14:45:47.56Z",
+        "TransmissionDatetime": "2022-10-25T12:47:35.19Z",
+        "IsAdvice":false,
+        "Installments": 1,
+        "AcquirerCode": "489427",
+        "Stan": 829121,
+        "SubType": "purchase",
+        "Authorization": {
+          "ID": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+          "Stan": 829121,
+          "TransmissionDatetime": "2022-10-25T12:47:35.19Z",
+          "CardAcceptor":{
+            "Terminal":"DA006032",
+            "Name": "Tienda"
+          }
+        },
+        "Transaction": {
+          "Amount": 35000,
+          "Currency": "BRL",
+          "DecimalDigits": 2,
+          "TotalAmount":35000
+        },
+        "Card": {
+          "NumberId": "GKALLNGKUBIEYQXVYBHPIYDLDMAWOADJIJSEDZAW",
+          "Country": "BR"
+        },
+        "Billing": {
+          "Amount": 35000,
+          "Currency": "BRL",
+          "DecimalDigits": 2,
+          "TotalAmount":35000,
+          "Conversion":{
+            "Rate":1,
+            "DecimalDigits":0,
+            "date":null,
+            "from":"transaction"
+          }
+        },
+        "Settlement": {
+          "Amount": 7000,
+          "Currency": "USD",
+          "DecimalDigits": 2,
+          "TotalAmount":7000,
+          "Conversion":{
+            "Rate":1,
+            "DecimalDigits":0,
+            "date":null,
+            "from":"transaction"
+          }
+        }               
+      },
+      "Provider": {
+        "ID": "conductor"
+      },
+      "Environment": "test",
+      "SiteID": "MLB",
+      "StatusDetail":"pending_capture",
+      "PayerID": 1234567890123456789,
+      "Type":"authorization"
+    }
+  }

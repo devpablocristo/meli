@@ -1,0 +1,130 @@
+{
+  "RulesSite": {
+    "MLM": {
+      "MaxAmountReparation": {
+        "MaxAmount": 200000,
+        "Currency": "MXN",
+        "DecimalDigits": 2,
+        "Score":{
+          "MinScoreValue": 0.1,
+          "MaxAmountDecimalized": 7000.00
+        },
+        "TrxAgeRanges": [
+          {
+            "GteDays": 7,
+            "LteDays": 14,
+            "MaxAccumulatedAmount": 75000,
+            "Currency": "MXN",
+            "DecimalDigits": 2,
+            "Score":{
+              "MinScoreValue": 0.2,
+              "MaxAccumulatedAmountDecimalized": 8000.00
+            }
+          },
+          {
+            "GteDays": 15,
+            "MaxAccumulatedAmount": 100000,
+            "Currency": "MXN",
+            "DecimalDigits": 2,
+            "Score":{
+              "MinScoreValue": 0.3,
+              "MaxAccumulatedAmountDecimalized": 9000.00
+            }
+          }
+        ]     
+      },
+      "QtyReparationPerPeriodDays": {
+        "Qty": 2,
+        "PeriodDays": 30,
+        "Score":{
+          "MinScoreValue": 0.3,
+          "Qty": 3
+        },        
+        "TrxAgeRanges": [
+          {
+            "GteDays": 7,
+            "LteDays": 14,
+            "Qty": 3,
+            "Score":{
+              "MinScoreValue": 0.4,
+              "Qty": 4
+            }            
+          },
+          {
+            "GteDays": 15,
+            "Qty": 4,
+            "Score":{
+              "MinScoreValue": 0.5,
+              "Qty": 5
+            }            
+          }
+        ]
+      },
+      "StatusDetailAllowed": {
+        "pending_capture": {}
+      },
+      "EvaluationUser": {
+        "Tags": [
+          "repair_allowed"
+        ]
+      },
+      "Blockeduser": {},
+      "UserLifetime":{
+        "GteDays":90,
+        "Score":{
+          "MinScoreValue": 0.35,
+          "GteDays": 30
+        }        
+      },
+      "Score":{
+          "MinScoreValue": 0.999
+      }      
+    },
+    "MLA": {
+      "MaxAmountReparation": {
+        "MaxAmount": 1900,
+        "Currency": "USD",
+        "DecimalDigits": 2,
+        "TrxAgeRanges":[]
+      },
+      "QtyReparationPerPeriodDays": {
+        "Qty": 1,
+        "PeriodDays": 90,
+        "TrxAgeRanges":[]
+      },
+      "StatusDetailAllowed": {
+        "pending_capture": {}
+      },
+      "EvaluationUser": {
+        "Tags": [
+          "repair_allowed"
+        ]
+      },
+      "Blockeduser": {},
+      "QtyChargebackPerPeriodDays": {
+        "Qty": 0,
+        "PeriodDays": 90
+      },
+      "MerchantBlockedlist":[
+        "123Componentes", "MERCADOPAGO*", "MERCPAGO*", "LckSe"
+      ],
+      "SubTypeAllowed":{
+        "purchase": {}
+      },
+      "MinTotalHistoricalAmount":{
+        "MinAmount": 10000,
+        "Currency": "USD",
+        "DecimalDigits": 2        
+      },     
+      "MinTransactionsQty":{
+        "MinQty":10
+      }
+    },
+    "MLC":{
+      "QtyChargebackPerPeriodDays": {
+        "Qty": 0,
+        "PeriodDays": 90
+      }      
+    }
+  }
+}

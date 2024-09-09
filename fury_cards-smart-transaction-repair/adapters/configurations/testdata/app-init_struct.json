@@ -1,0 +1,63 @@
+{ 
+  "Infra": {    
+    "URLTransactionsSearch": "http://internal.mercadopago.com/",    
+    "TransactionsApp": {
+      "BetaScope":"beta",
+      "BaseURL":{"Scheme":"http","Opaque":"","User":null,"Host":"beta.transactional-cards.melisystems.com","Path":"/","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":""},
+      "BaseURLLegacy":{"Scheme":"http","Opaque":"","User":null,"Host":"internal.mercadopago.com","Path":"/beta/","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":""},      
+      "ProvidersWithLegacyURL":{        
+        "globalprocessing": {},
+        "evertec": {} 
+      }       
+    },      
+    "KVSReparation": {
+      "Name": "REPARATION_HOM",      
+      "ReadRetries":2,
+      "WriteRetries":1
+    },
+    "KVSBlockedlist": {
+      "Name": "BLOCKEDLIST_HOM",
+      "ReadTimeout":250000000,
+      "WriteTimeout":250000000,
+      "ReadRetries":1,
+      "WriteRetries":2
+    },
+    "DSReparation":{
+      "Name": "REPARATION_HOM-DS",
+      "ReadTimeout":2250000000,      
+      "Retries":1
+    },
+    "DSBlockeduser":{
+      "Name": "BLOCKEDUSER_HOM-DS",
+      "ReadTimeout":2250000000,      
+      "Retries":1
+    },
+    "DSValidation":{
+      "Name": "VALIDATION_HOM-DS",      
+      "WriteTimeout":750000000,
+      "Retries":1,
+      "RetryDelay":1,
+      "RetryAllowedMethods": ["POST"]
+    },
+    "GraphqlKyc":{
+      "URL":"http://internal.mercadolibre.com/v3/",
+      "PegasusToken":"cards-smart-transaction-repair",
+      "APISandbox":true      
+    },
+    "Topics":{
+      "ValidationResult":{
+        "Name":"VALIDATION_RESULT_BETA",
+        "Timeout": 3000000000,
+        "Retries":1
+      }
+    },
+    "CardsDataModels":{
+      "BaseURL":{"Scheme":"https","Opaque":"","User":null,"Host":"beta-operational-cards.melioffice.com","Path":"/","RawPath":"","OmitHost":false,"ForceQuery":false,"RawQuery":"","Fragment":"","RawFragment":""},      
+      "Timeout": 3000000000
+    }
+  },
+  "Options": {
+    "TimeoutSecondsHTTP": 3000000000,
+    "TimeoutHoursCacheDefault": 18000000000000
+  }      
+}

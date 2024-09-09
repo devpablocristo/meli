@@ -1,0 +1,26 @@
+package domain
+
+const (
+	TimerHandlerReverse                           = "handler.reverse"
+	TimerConsumerCaptures                         = "consumer.captures"
+	TimerConsumerReversals                        = "consumer.reversals"
+	TimerConsumerValidationResult                 = "consumer.validation_result"
+	TimerDsRepairGetByPaymentIDAndUserID          = "dsrepair.get_by_paymentid_and_userid"
+	TimerCardsTransactionReverse                  = "cardstransaction.reverse"
+	TimerDsRepairGetTransactionRepair             = "dsrepair.get_transaction_repair"
+	TimerConfigurationsLoadParametersValidation   = "configurations.load_parameters_validation"
+	TimerDsRepairGetListByUserIDAndCreationPeriod = "dsrepair.get_list_by_userid_and_creationperiod"
+	TimerDsValidationSave                         = "dsvalidation.save"
+	TimerKvsRepairSave                            = "kvsrepair.save"
+	TimerKvsBlockelistGet                         = "kvsblockedlist.get"
+	TimerKvsBlockelistSave                        = "kvsblockedlist.save"
+	TimerDsRepairGetList                          = "dsrepair.getlist"
+	TimerDsBlockedUserGetListByAuthorizationIDs   = "dsblockeduser.get_list_by_auth_ids"
+	TimerPolicyAgentEvaluate                      = "policyagente.evaluate"
+	TimerSearchHubCountChargebackFromUser         = "graphql.count_chargeback"
+	TimerSearchKycGetUserKyc                      = "graphql_kyc.get_user"
+	TimerSearchHubGetTransactionHistory           = "graphql.get_transaction_history"
+	TimerGetScore                                 = "score.get_score"
+	TimerEventValidationResultPublish             = "eventvalidation.publish"
+	TimerGraphqlGetPaymentTransactionByPaymentID  = "graphql.hub.get_payment_transaction_by_payment_id"
+)

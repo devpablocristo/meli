@@ -1,0 +1,238 @@
+openapi: 3.0.1
+info:
+  title: Smart Transaction Repair
+  version: 1.0.0  
+servers:
+  - url: https://internal.mercadopago.com/cards/smart-transaction-repair/
+paths:
+  /v1/reverse/{payment_id}:
+    post:
+      tags:
+        - Reverse
+      summary: Requests to return a transaction
+      parameters:
+        - name: X-Client-Id
+          in: header
+          description: Identifier required for integration with transactional api
+          required: true
+          schema:
+            type: string
+        - name: payment_id
+          in: path
+          description: Client user transaction identifier
+          required: true
+          schema:
+            type: string        
+      requestBody:
+        description: Object containing the data necessary for the return
+        content:
+          application/json:
+            schema:              
+              $ref: "#/components/schemas/Reversal"                
+            examples:
+              exRequestReversal:
+                $ref: "#/components/examples/exRequestReversal"              
+        required: true
+      responses:
+        200:
+          description: Reparation result information
+          content:
+            application/json:
+              example:
+                message: Reverse successfully requested                
+        400:
+          description:
+            Invalid input data. Occurs when trying to request a return
+            with malformed or invalid payload information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseError"                  
+              examples:
+                exErr400HandlerReverseBodyBadRequest:
+                  $ref: "#/components/examples/exErr400HandlerReverseBodyBadRequest"
+                exErr400HandlerReverseHeaderBadRequest:
+                  $ref: "#/components/examples/exErr400HandlerReverseHeaderBadRequest"                
+                exErr400ServiceReverseBadRequest:
+                  $ref: "#/components/examples/exErr400ServiceReverseBadRequest"                
+        401:
+          description: No valid authentication credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseError"      
+              examples:
+                exErr401HandlerReverseUnauthorized:
+                  $ref: "#/components/examples/exErr401HandlerReverseUnauthorized"
+        409:
+          description: When there is already a reparation for the payment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseError"      
+              examples:
+                exErr409ServiceReverseAlreadyRepaired:
+                  $ref: "#/components/examples/exErr409ServiceReverseAlreadyRepaired"          
+        422:
+          description: "When the repair request is not eligible for its realization. 
+                        And/Or: When there are divergences in the validation requirements."
+          content:
+            application/json:
+              schema:
+                oneOf:                  
+                  - $ref: "#/components/schemas/ResponseErrorNotEligible"
+                  - $ref: "#/components/schemas/ResponseError"
+              examples:
+                exErr422ReverseNotEligible:
+                  $ref: "#/components/examples/exErr422ReverseNotEligible"
+                exErr422ReverseUnprocessableEntityParametersNotConfigured:
+                  $ref: "#/components/examples/exErr422ReverseUnprocessableEntityParametersNotConfigured"
+                exErr422ReverseUnprocessableEntityDifferentSites:
+                  $ref: "#/components/examples/exErr422ReverseUnprocessableEntityDifferentSites"
+                exErr422ReverseUnprocessableEntityDifferentUser:
+                  $ref: "#/components/examples/exErr422ReverseUnprocessableEntityDifferentUser"
+                exErr422ReverseUnprocessableEntityDifferentCurrency:
+                  $ref: "#/components/examples/exErr422ReverseUnprocessableEntityDifferentCurrency"        
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:                
+                  $ref: "#/components/schemas/ResponseError"                  
+              examples:
+                exErr500InternalServerError:
+                  $ref: "#/components/examples/exErr500InternalServerError"     
+        502:
+          description: Error in some service used by the application
+          content:
+            application/json:
+              schema:                
+                  $ref: "#/components/schemas/ResponseError"                  
+              examples:
+                exErr502ServiceReverseBadGateway:
+                  $ref: "#/components/examples/exErr502ServiceReverseBadGateway"                  
+components:
+  schemas:
+    Reversal:
+      type: object
+      required:
+        - user_id        
+      properties:
+        user_id:                                  
+          type: string
+          description: customer user identifier
+    ResponseError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: error code
+        message:
+          type: string
+          description: error message
+        cause:
+          type: string
+          description: error details
+    ResponseErrorNotEligible:
+      type: object
+      properties:
+        code:
+          type: string
+          description: error code
+        message:
+          type: string
+          description: error message
+        cause:
+          type: object
+          description: error details
+          properties:
+            reason:
+              type: string
+              description: generic reparation validation denied message
+            creation_datetime:
+              type: string
+              description: payment creation date
+
+  examples:
+    exRequestReversal:
+      value:
+        user_id: 123                                                         
+      summary: Data for request
+    exErr400HandlerReverseBodyBadRequest:
+      value:
+        code: bad_request        
+        message: invalid request
+        cause: "unprocessable_entity: validation_error: invalid fields: UserID"          
+      summary: Body validation error
+    exErr400HandlerReverseHeaderBadRequest:
+      value:
+        code: bad_request        
+        message: invalid request
+        cause: x-client-id header is required 
+      summary: Header validation error
+    exErr400ServiceReverseBadRequest:
+      value:
+        code: bad_request        
+        message: invalid request
+        cause: "required fields: PaymentID; UserID;"          
+      summary: Required values not received for reverse service    
+    exErr401HandlerReverseUnauthorized:
+      value:
+        code: unauthorized        
+        message: invalid request
+        cause: request is not authorized          
+      summary: Authentication error
+    exErr409ServiceReverseAlreadyRepaired:
+      value:
+        code: already_repaired        
+        message: invalid request
+        cause: "reverse already done"          
+      summary: Reparation is listed as made in our system
+    exErr422ReverseNotEligible:
+      value:
+        code: not_eligible        
+        message: validation result
+        cause: 
+          reason: customer not eligible for reversal
+          creation_datetime: "2022-12-07T21:46:07.713Z"
+      summary: Request not eligible for return
+    exErr422ReverseUnprocessableEntityParametersNotConfigured:
+      value:
+        code: unprocessable_entity        
+        message: validation failed
+        cause: validation parameters for site(MLB) not configured
+      summary: Validation parameters not configured
+    exErr422ReverseUnprocessableEntityDifferentSites:
+      value:
+        code: unprocessable_entity        
+        message: validation failed
+        cause: received siteID(MLM) different from database(MLM)
+      summary: Requested repair site is different from the payment in the database
+    exErr422ReverseUnprocessableEntityDifferentUser:
+      value:
+        code: unprocessable_entity        
+        message: validation failed
+        cause: received userID(12345) different from database(67890)
+      summary: Requested repair user is different from payment user in database
+    exErr422ReverseUnprocessableEntityDifferentCurrency:
+      value:
+        code: unprocessable_entity        
+        message: validation failed
+        cause: transaction currency(USD) different from the parameters(MXN)
+      summary: Transaction currency is different from the parameterized currency
+    exErr500InternalServerError:
+      value:
+        code: internal_server_error
+        message: sorry, an unknown error occurred
+        cause: some unknown error
+      summary: Internal server error
+    exErr502ServiceReverseBadGateway:
+      value:
+        code: bad_gateway
+        message: request transaction reversal failed
+        cause: "{\"result\":{\"status\":\"declined\",\"status_detail\":\"invalid_reversal_amount\",\"processed_at\":\"2022-10-27T14:34:12.281Z\"}}"
+      summary: Error in some service used by the application
+    
+    
+
+     

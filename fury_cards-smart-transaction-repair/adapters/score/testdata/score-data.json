@@ -1,0 +1,79 @@
+{
+  "ScoreData": {
+    "Operation": {
+      "SubType": "purchase",
+      "CreationDatetime": "2024-06-12T19:52:12.231Z",
+      "TransmissionDatetime": "2022-05-25T17:47:47Z",
+      "IsAdvice": false,
+      "Installments": 1,
+      "AcquirerCode": "999922",
+      "Stan": 35032,
+      "PaymentAge": 0,
+      "AccountType": "debit",
+      "AuthorizationIndicator": "undefined",
+      "IsInternational": false,
+      "Authorization": {
+        "ID": "auth_adtorres_7dd8a554-b565-496c-af36-7ce02fdec749",
+        "Stan": 35032,
+        "TransmissionDatetime": "2022-05-25T17:47:47Z",
+        "CardAcceptor": {
+          "Terminal": "",
+          "Name": "CRYSTALZOOM",
+          "EntryMode": "credential_on_file",
+          "Type": "5734",
+          "TerminalMode": "unknown",
+          "PinCapability": "unknown"
+        }
+      },
+      "Transaction": {
+        "Amount": 80000,
+        "Currency": "MXN",
+        "DecimalDigits": 2,
+        "TotalAmount": 80000
+      },
+      "Card": {
+        "NumberId": "FFCKHBLXLVWAJKXNYVESRLPIUZHFUCPSPDSALYAO",
+        "Country": "MX",
+        "IssuerAccount": {
+          "CardBusinessMode": "debit-virtual"
+        },
+        "TokenInfo": {
+          "TokenWalletID": ""
+        }
+      },
+      "Billing": {
+        "Amount": 80000,
+        "Currency": "MXN",
+        "DecimalDigits": 2,
+        "TotalAmount": 80000,
+        "Conversion": {
+          "Date": "2022-05-25T17:47:47Z",
+          "DecimalDigits": null,
+          "Rate": null,
+          "From": null
+        }
+      },
+      "Settlement": {
+        "Amount": 4000,
+        "Currency": "USD",
+        "DecimalDigits": 2,
+        "TotalAmount": 0,
+        "Conversion": {
+          "Date": null,
+          "DecimalDigits": null,
+          "Rate": null,
+          "From": null
+        }
+      }
+    },
+    "Provider": {
+      "ID": "evertec"
+    },
+    "Environment": "test",
+    "SiteID": "MLA",
+    "StatusDetail": "pending_capture",
+    "PayerID": 1197852173,
+    "Type": "authorization",
+    "IsRecurringPayment": false
+  }
+}

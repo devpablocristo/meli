@@ -1,0 +1,58 @@
+{
+    "id": "smart_reverse_auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+    "operation": {       
+        "type": "purchase", 
+        "transmission_datetime": "2022-10-25T12:47:35.19Z",
+        "is_advice": false,     
+        "installments": 1,
+        "acquirer_code": "489427", 
+        "stan": 829121,  
+        "authorization": {
+            "id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+            "stan": 829121,
+             "transmission_datetime": "2022-10-25T12:47:35.19Z",
+            "card_acceptor": {
+                "terminal": "DA006032"
+            }
+        },
+        "transaction": {
+             "amount": 35000,
+             "currency": "BRL",
+             "decimal_digits": 2,
+             "total_amount": 35000            
+        },
+        "settlement": {
+            "amount": 6000,  
+            "currency": "USD",
+            "decimal_digits": 2,
+            "conversion": {
+                "date": null,
+                "decimal_digits": null,
+                "rate": null,
+                "from": null
+            }             
+        },
+        "billing": { 
+            "amount": 35000,                                          
+            "decimal_digits": 2,
+            "currency": "BRL",
+            "total_amount": 35000,
+            "conversion":{
+                "rate":1,
+                "decimal_digits":0,
+                "date":null,
+                "from":"transaction"
+              }                          
+        },
+        "card": {            
+            "number_id": "GKALLNGKUBIEYQXVYBHPIYDLDMAWOADJIJSEDZAW",
+             "country": "BR"
+        }        
+    },  
+    "provider": {
+        "id": "conductor"
+    },
+    "options": {
+        "reversal_type": "smart_reverse"      
+    }
+}

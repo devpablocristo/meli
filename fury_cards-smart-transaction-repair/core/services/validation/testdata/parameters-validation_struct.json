@@ -1,0 +1,115 @@
+{
+      "RulesSite":{
+            "MLB":{
+                  "StatusDetailAllowed": {
+                        "pending_capture": {}
+                  },
+                  "QtyReparationPerPeriodDays": {
+                        "Qty": 2,
+                        "PeriodDays": 30,
+                        "TrxAgeRanges": [
+                              {
+                                "GteDays": 7,
+                                "LteDays": 14,
+                                "qty": 2
+                              },
+                              {
+                                "GteDays": 15,
+                                "Qty": 3
+                              }
+                        ]
+                  },   
+                  "MaxAmountReparation": {                        
+                        "MaxAmount": 50000,
+                        "Currency": "BRL",
+                        "DecimalDigits":2,
+                        "TrxAgeRanges": [
+                              {
+                                "GteDays": 7,
+                                "LteDays": 14,
+                                "MaxAccumulatedAmount": 75000,
+                                "Currency": "MXN",
+                                "DecimalDigits": 2
+                              },
+                              {
+                                "GteDays": 15,
+                                "MaxAccumulatedAmount": 100000,
+                                "Currency": "MXN",
+                                "DecimalDigits": 2
+                              }
+                        ]                       
+                  },
+                  "EvaluationUser": {
+                        "Tags": [
+                          "repair_allowed"
+                        ]
+                  },
+                  "QtyChargebackPerPeriodDays": {
+                        "Qty": 0,
+                        "PeriodDays": 90
+                  }, 
+                  "Blockeduser": {},
+                  "MerchantBlockedlist":[
+                        "123Componentes", "MERCADOPAGO*", "MERCPAGO*", "LckSe"
+                      ],
+                  "SubTypeAllowed":{
+                        "purchase": {}
+                  },
+                  "UserLifetime":{
+                        "GteDays":10
+                  },
+                  "MinTotalHistoricalAmount":{
+                        "MinAmount": 10000,
+                        "Currency": "USD",
+                        "DecimalDigits": 2        
+                      },     
+                  "MinTransactionsQty":{
+                        "MinQty": 10
+                  },
+                  "Score": {
+                        "MinScoreValue": 0.5
+                  }                   
+            },
+            "MLA":{
+                  "StatusDetailAllowed": {
+                        "pending_capture": {}
+                  },
+                  "QtyReparationPerPeriodDays": {
+                        "Qty": 2,
+                        "PeriodDays": 30
+                  },   
+                  "MaxAmountReparation": {                        
+                        "MaxAmount": 1900,
+                        "Currency": "USD",
+                        "DecimalDigits":2                        
+                  },
+                  "EvaluationUser": {
+                        "Tags": [
+                          "repair_allowed"
+                        ]
+                  },
+                  "QtyChargebackPerPeriodDays": {
+                        "Qty": 0,
+                        "PeriodDays": 90
+                  }, 
+                  "Blockeduser": {},
+                  "MerchantBlockedlist":[
+                        "123Componentes", "MERCADOPAGO*", "MERCPAGO*", "LckSe"
+                      ],
+                  "SubTypeAllowed":{
+                        "purchase": {}
+                  },
+                  "UserLifetime":{
+                        "GteDays":10
+                  },
+                  "MinTotalHistoricalAmount":{
+                        "MinAmount": 10000,
+                        "Currency": "USD",
+                        "DecimalDigits": 2        
+                      },     
+                  "MinTransactionsQty":{
+                        "MinQty": 10
+                  }                         
+            }  
+      }
+}

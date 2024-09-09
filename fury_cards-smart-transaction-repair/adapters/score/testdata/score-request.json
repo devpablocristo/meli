@@ -1,0 +1,77 @@
+{
+    "operation": {
+        "sub_type": "purchase",
+        "creation_datetime": "2024-06-12T19:52:12.231Z",
+        "transmission_datetime": "2022-05-25T17:47:47Z",
+        "is_advice": false,
+        "installments": 1,
+        "acquirer_code": "999922",
+        "stan": 35032,
+        "payment_age": 0,
+        "account_type": "debit",
+        "authorization_indicator": "undefined",
+        "is_international": false,
+        "authorization": {
+            "id": "auth_adtorres_7dd8a554-b565-496c-af36-7ce02fdec749",
+            "stan": 35032,
+            "transmission_datetime": "2022-05-25T17:47:47Z",
+            "card_acceptor": {
+                "terminal": "",
+                "name": "CRYSTALZOOM",
+                "entry_mode": "credential_on_file",
+                "type": "5734",
+                "terminal_mode": "unknown",
+                "pin_capability": "unknown"
+            }
+        },
+        "transaction": {
+            "amount": 80000,
+            "currency": "MXN",
+            "decimal_digits": 2,
+            "total_amount": 80000
+        },
+        "card": {
+            "number_id": "FFCKHBLXLVWAJKXNYVESRLPIUZHFUCPSPDSALYAO",
+            "country": "MX",
+            "issuer_account": {
+                "business_mode": "debit-virtual"
+            },
+            "token_info": {
+                "token_wallet_id": ""
+            }
+        },
+        "billing": {
+            "amount": 80000,
+            "currency": "MXN",
+            "decimal_digits": 2,
+            "total_amount": 80000,
+            "conversion": {
+                "date": "2022-05-25T17:47:47Z",
+                "decimal_digits": null,
+                "rate": null,
+                "from": null
+            }
+        },
+        "settlement": {
+            "amount": 4000,
+            "currency": "USD",
+            "decimal_digits": 2,
+            "total_amount": 0,
+            "conversion": {
+                "date": null,
+                "decimal_digits": null,
+                "rate": null,
+                "from": null
+            }
+        }
+    },
+    "provider": {
+        "id": "evertec"
+    },
+    "environment": "test",
+    "site_id": "MLA",
+    "status_detail": "pending_capture",
+    "payer_id": 1197852173,
+    "type": "authorization",
+    "is_recurring_payment": false
+}

@@ -1,0 +1,13 @@
+{
+    "errors": [
+        {
+            "message": "bad request when try to get payment id '52525109477A'",
+            "path": [
+                "payment"
+            ]
+        }
+    ],
+    "data": {
+        "payment": null
+    }
+}

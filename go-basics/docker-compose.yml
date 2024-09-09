@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0 # Imagem do MySQL versão 8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root # Senha do usuário root do MySQL
+      MYSQL_DATABASE: inventory # Banco de dados que será criado no MySQL
+      MYSQL_USER: api_user # Usuário que será criado no MySQL
+      MYSQL_PASSWORD: api_password # Senha para o usuário 'api_user'
+    ports:
+      - "3306:3306" # Publica a porta 3306 do contêiner na porta 3306 do host
+    volumes:
+      - mysql_data:/var/lib/mysql # Volume para persistir os dados do MySQL
+      # - ./init.sql:/docker-entrypoint-initdb.d/init.sql # Arquivo SQL para inicializar o banco de dados
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.1-apache # Imagem do phpMyAdmin versão 5.2.1 com Apache
+    environment:
+      PMA_HOST: mysql # Host do MySQL ao qual o phpMyAdmin se conectará
+      MYSQL_ROOT_PASSWORD: root # Senha do usuário root do MySQL
+    ports:
+      - "9000:80" # Publica a porta 80 do contêiner na porta 8081 do host
+    depends_on:
+      - mysql # O serviço 'phpmyadmin' depende do serviço 'mysql', ou seja, será iniciado após 'mysql'
+
+volumes:
+  mysql_data: # Definição do volume para persistir os dados do MySQL

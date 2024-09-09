@@ -1,0 +1,24 @@
+{
+    "cluster": "mp01",
+    "consumer": "consumer-beta-transactions.cards-smart-transaction-repair",
+    "filters": {
+      "enabled": false,
+      "filter_strategy": null,
+      "modified_fields": [
+        "environment:test",
+        "provider:conductor",
+        "type:capture",
+        "country:br"
+      ]
+    },
+    "id": "6492432751466015",
+    "msg": {
+      "authorization_id": "forced_offline-capture_auth_mlb_test_adtorres_score-full-8-1669990748570",
+      "id": "capture_auth_mlb_test_adtorres_score-full-8",
+      "type": "capture"
+    },
+    "publish_time": 1669990749682,
+    "recipientCallback": "6492432751466015",
+    "topic": "cards-transactions-api-news-feed.cards-transactions-api",
+    "uid": "6492432751466015"
+}

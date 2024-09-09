@@ -1,0 +1,10 @@
+{
+  "authorization_id": "auth_1",
+  "payment_id": "1",
+  "kyc_identification_id":"abc",
+  "user_id": 123,
+  "transaction_repair_id": "reverse_smart_auth_1",
+  "site_id": "MLM",
+  "created_at": "2022-11-10T00:00:00Z",
+  "type": "reverse"
+}

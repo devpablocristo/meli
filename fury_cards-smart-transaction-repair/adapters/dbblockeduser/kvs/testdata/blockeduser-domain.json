@@ -1,0 +1,18 @@
+{
+  "KycIdentificationID":"abc",
+  "UnlockedAt": null,
+  "SiteID": "MLM",
+  "CreatedAt": "2022-12-01T23:07:31.644839Z",
+  "LastBlockedAt": "2022-12-01T23:07:31.644839Z",
+  "CountCaptures": 1,
+  "CapturedRepairs": [
+    { 
+      "AuthorizationID": "auth_01",
+      "UserID": 123,
+      "PaymentID": "111122223333",
+      "TypeRepair": "reverse",
+      "RepairedAt": "2022-12-01T23:07:31.644839Z",
+      "CreatedAt": "2022-12-01T23:07:31.644839Z"
+    }    
+  ]
+}

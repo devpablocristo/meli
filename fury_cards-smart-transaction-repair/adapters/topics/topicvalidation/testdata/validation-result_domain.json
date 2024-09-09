@@ -1,0 +1,83 @@
+{
+    "PaymentID": "50844833020",
+    "KycIdentificationID": "abc",
+    "UserID": 1117823961,
+    "IsEligible": false,
+    "DateCreated": "2022-12-01T00:00:00Z",
+    "AuthorizationID": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+    "Type": "reverse",
+    "SiteID": "MLM",
+    "FaqID": "faq_01",
+    "Score": 0.5,
+    "ApprovedData": {        
+        "score":{
+          "Actual": 0.5,
+          "Accepted": 0.5
+        }          
+    },
+    "Requester": {
+      "ClientApplication": "cards-admin-me",
+      "ClientScope": "beta"
+    },
+    "TransactionEvaluated": {
+      "Amount":12.345,
+      "Currency": "MXN"      
+    },
+    "Reason": {
+      "max_amount_reparation": {
+        "Actual": 15000,
+        "Accepted": 10000
+      },
+      "status_detail": {
+        "Actual": "cancel_without_refund",
+        "Accepted": [
+          "pending_capture"
+        ]
+      },
+      "qty_reparation_per_period": {
+        "Actual": 100,
+        "Accepted": {
+          "Qty": 100,
+          "PeriodDays": 1000
+        }
+      },
+      "blockeduser": {
+        "Actual": true
+      },
+      "restrictions": {
+        "Actual": [
+          "24bbd8493c4082b228801839dcb6e154"
+        ],
+        "Accepted": null
+      },
+      "qty_chargeback_per_period": {
+        "Actual": 11,
+        "Accepted": {
+          "Qty": 10,
+          "PeriodDays": 1000
+        }
+      },
+      "merchant_blockedlist": {
+        "Actual": "123Componentes",
+        "Accepted": null
+      },
+      "subtype": {
+        "Actual": "purchase extracash",
+        "Accepted": [
+          "purchase"
+        ]
+      },
+      "user_lifetime": {
+        "Actual": "2023-02-01T00:00:00Z",
+        "Accepted": 10
+      },
+      "min_total_historical_amount": {
+        "Actual": 10,
+        "Accepted": 10000
+      },
+      "min_transactions_qty": {
+        "Actual": 90,
+        "Accepted": 100
+      }
+    }
+  }

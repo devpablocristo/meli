@@ -1,0 +1,283 @@
+{
+  "max_amount_reparation": {    
+      "id": "581fb1b8-feab-4899-857a-9b8ba6faddd2",
+      "payment_id": "50844833020",
+      "kyc_identification_id": "abc",
+      "user_id": 1117823961,
+      "is_eligible": false,
+      "created_at": "2022-12-01T00:00:00Z",
+      "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+      "type_reparation": "reverse",
+      "site_id": "MLM",
+      "rule": "max_amount_reparation",
+      "faq_id": "faq_01",
+      "value_declined": "15000",
+      "allowed_value": "10000",
+      "client_application": "cards-admin-me",
+      "amount": 12.345,
+      "currency": "MXN",
+      "client_scope":"beta",
+      "score": 0.5, 
+      "approved_data": {        
+        "score":{
+          "actual": 0.5,
+          "accepted": 0.5
+        }          
+      },     
+      "reason": {
+        "blockeduser": {
+          "Actual": true,
+          "Accepted": null
+        },
+        "max_amount_reparation": {
+          "Actual": 15000,
+          "Accepted": 10000
+        },
+        "merchant_blockedlist": {
+          "Actual": "123Componentes",
+          "Accepted": null
+        },
+        "min_total_historical_amount": {
+          "Actual": 10,
+          "Accepted": 10000
+        },
+        "min_transactions_qty": {
+          "Actual": 90,
+          "Accepted": 100
+        },
+        "qty_chargeback_per_period": {
+          "Actual": 11,
+          "Accepted": {
+            "PeriodDays": 1000,
+            "Qty": 10
+          }
+        },
+        "qty_reparation_per_period": {
+          "Actual": 100,
+          "Accepted": {
+            "PeriodDays": 1000,
+            "Qty": 100
+          }
+        },
+        "restrictions": {
+          "Actual": [
+            "24bbd8493c4082b228801839dcb6e154"
+          ],
+          "Accepted": null
+        },
+        "status_detail": {
+          "Actual": "cancel_without_refund",
+          "Accepted": [
+            "pending_capture"
+          ]
+        },
+        "subtype": {
+          "Actual": "purchase extracash",
+          "Accepted": [
+            "purchase"
+          ]
+        },
+        "user_lifetime": {
+          "Actual": "2023-02-01T00:00:00Z",
+          "Accepted": 10
+        }
+      }
+    },
+    "blockeduser": {
+      "id": "007316ac-1cfe-4f0d-addf-c169155f04d6",
+      "payment_id": "50844833020",
+      "kyc_identification_id": "abc",
+      "user_id": 1117823961,
+      "is_eligible": false,
+      "created_at": "2022-12-01T00:00:00Z",
+      "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+      "type_reparation": "reverse",
+      "site_id": "MLM",
+      "rule": "blockeduser",
+      "faq_id": "faq_01",
+      "value_declined": "true",
+      "client_application": "cards-admin-me",
+      "amount": 12.345,
+      "currency": "MXN",
+      "client_scope":"beta",
+      "score": 0.5
+    },
+    "restrictions":{
+      "id": "a6bf3222-a660-4351-b3b0-782e0e322c9e",
+      "payment_id": "50844833020",
+      "kyc_identification_id": "abc",
+      "user_id": 1117823961,
+      "is_eligible": false,
+      "created_at": "2022-12-01T00:00:00Z",
+      "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+      "type_reparation": "reverse",
+      "site_id": "MLM",
+      "rule": "restrictions",
+      "faq_id": "faq_01",
+      "value_declined": "[24bbd8493c4082b228801839dcb6e154]",
+      "client_application": "cards-admin-me",
+      "amount": 12.345,
+      "currency": "MXN",
+      "client_scope":"beta",
+      "score": 0.5
+    },
+    "qty_chargeback_per_period":{
+      "id": "e7fa3a5c-d793-4530-9ebd-66953e9014f6",
+      "payment_id": "50844833020",
+      "kyc_identification_id": "abc",
+      "user_id": 1117823961,
+      "is_eligible": false,
+      "created_at": "2022-12-01T00:00:00Z",
+      "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+      "type_reparation": "reverse",
+      "site_id": "MLM",
+      "rule": "qty_chargeback_per_period",
+      "faq_id": "faq_01",
+      "value_declined": "11",
+      "allowed_value": "{PeriodDays:1000,Qty:10}",
+      "client_application": "cards-admin-me",
+      "amount": 12.345,
+      "currency": "MXN",
+      "client_scope":"beta",
+      "score": 0.5
+    },
+    "merchant_blockedlist": {
+      "id": "aedb6585-b883-4d3c-8f73-9b6a9284da24",
+      "payment_id": "50844833020",
+      "kyc_identification_id": "abc",
+      "user_id": 1117823961,
+      "is_eligible": false,
+      "created_at": "2022-12-01T00:00:00Z",
+      "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+      "type_reparation": "reverse",
+      "site_id": "MLM",
+      "rule": "merchant_blockedlist",
+      "faq_id": "faq_01",
+      "value_declined": "123Componentes",
+      "client_application": "cards-admin-me",
+      "amount": 12.345,
+      "currency": "MXN",
+      "client_scope":"beta",
+      "score": 0.5
+    },
+    "subtype": {
+      "id": "ad2724fd-f90e-494a-8a5f-fbd72970f29e",
+      "payment_id": "50844833020",
+      "kyc_identification_id": "abc",
+      "user_id": 1117823961,
+      "is_eligible": false,
+      "created_at": "2022-12-01T00:00:00Z",
+      "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+      "type_reparation": "reverse",
+      "site_id": "MLM",
+      "rule": "subtype",
+      "faq_id": "faq_01",
+      "value_declined": "purchase extracash",
+      "allowed_value": "[purchase]",
+      "client_application": "cards-admin-me",
+      "amount": 12.345,
+      "currency": "MXN",
+      "client_scope":"beta",
+      "score": 0.5
+    },
+    "user_lifetime": {
+      "id": "28e0a65a-2091-42bd-ba90-66fc2ada8b19",
+      "payment_id": "50844833020",
+      "kyc_identification_id": "abc",
+      "user_id": 1117823961,
+      "is_eligible": false,
+      "created_at": "2022-12-01T00:00:00Z",
+      "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+      "type_reparation": "reverse",
+      "site_id": "MLM",
+      "rule": "user_lifetime",
+      "faq_id": "faq_01",
+      "value_declined": "2023-02-01T00:00:00Z",
+      "allowed_value": "10",
+      "client_application": "cards-admin-me",
+      "amount": 12.345,
+      "currency": "MXN",
+      "client_scope":"beta",
+      "score": 0.5
+    },
+    "status_detail": {
+      "id": "a9300409-4548-4254-ba97-d2f40e2505d3",
+      "payment_id": "50844833020",
+      "kyc_identification_id": "abc",
+      "user_id": 1117823961,
+      "is_eligible": false,
+      "created_at": "2022-12-01T00:00:00Z",
+      "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+      "type_reparation": "reverse",
+      "site_id": "MLM",
+      "rule": "status_detail",
+      "faq_id": "faq_01",
+      "value_declined": "cancel_without_refund",
+      "allowed_value": "[pending_capture]",
+      "client_application": "cards-admin-me",
+      "amount": 12.345,
+      "currency": "MXN",
+      "client_scope":"beta",
+      "score": 0.5
+    },
+    "qty_reparation_per_period":{
+      "id": "1bdeeac8-e13c-4645-b80c-a91d6cd49c45",
+      "payment_id": "50844833020",
+      "kyc_identification_id": "abc",
+      "user_id": 1117823961,
+      "is_eligible": false,
+      "created_at": "2022-12-01T00:00:00Z",
+      "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+      "type_reparation": "reverse",
+      "site_id": "MLM",
+      "rule": "qty_reparation_per_period",
+      "faq_id": "faq_01",
+      "value_declined": "100",
+      "allowed_value": "{Qty:100,PeriodDays:1000}",
+      "client_application": "cards-admin-me",
+      "amount": 12.345,
+      "currency": "MXN",
+      "client_scope":"beta",
+      "score": 0.5
+    },
+    "min_total_historical_amount": {
+      "id": "4b0def3d-a3f4-4356-a26b-f17b41d15e46",
+      "payment_id": "50844833020",
+      "kyc_identification_id": "abc",
+      "user_id": 1117823961,
+      "is_eligible": false,
+      "created_at": "2022-12-01T00:00:00Z",
+      "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+      "type_reparation": "reverse",
+      "site_id": "MLM",
+      "rule": "min_total_historical_amount",
+      "faq_id": "faq_01",
+      "value_declined": "10",
+      "allowed_value": "10000",
+      "client_application": "cards-admin-me",
+      "amount": 12.345,
+      "currency": "MXN",
+      "client_scope":"beta",
+      "score": 0.5
+    },
+    "min_transactions_qty":{
+      "id": "74d42eca-4000-472f-9d3e-c7d7540aa797",
+      "payment_id": "50844833020",
+      "kyc_identification_id": "abc",
+      "user_id": 1117823961,
+      "is_eligible": false,
+      "created_at": "2022-12-01T00:00:00Z",
+      "authorization_id": "auth_mlb_test_aotorres_FyLRqgiKVMw9Vb8y737ppvNBsYpvkf",
+      "type_reparation": "reverse",
+      "site_id": "MLM",
+      "rule": "min_transactions_qty",
+      "faq_id": "faq_01",
+      "value_declined": "90",
+      "allowed_value": "100",
+      "client_application": "cards-admin-me",
+      "amount": 12.345,
+      "currency": "MXN",
+      "client_scope":"beta",
+      "score": 0.5
+    }
+}
